@@ -1,1 +1,2 @@
-updated 8 13 14:08
+#The dotfile backup on github
+Here is some config file of my mac os development.
