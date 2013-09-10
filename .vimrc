@@ -7,4 +7,5 @@ set number
 set cursorline
 set foldenable
 set foldmethod=syntax
+set mouse=a 
 
