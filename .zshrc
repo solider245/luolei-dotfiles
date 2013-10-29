@@ -18,6 +18,8 @@ ZSH_THEME="robbyrussell"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/oh-my-zsh"
+  alias is26="ssh root@is26.com"
+  alias gfw="node fuckgfw/local.js"
 
 # Set to this to use case-sensitive completion
 # CASE_SENSITIVE="true"
