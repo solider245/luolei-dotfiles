@@ -1,10 +1,7 @@
-#
-#
-#
-#Oh-my-ZSH -------- http://luolei.org
-#
-#
 
+#-------------------------------------------------------------------
+#Oh-my-ZSH 配置 -------- http://luolei.org 
+#-------------------------------------------------------------------
 
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/oh-my-zsh
@@ -18,12 +15,55 @@ ZSH_THEME="robbyrussell"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/oh-my-zsh"
-  alias is26="ssh root@is26.com"
-  alias gfw="node fuckgfw/local.js"
+
+alias sz='source ~/.zshrc'
+
+# -------------------------------------------------------------------
+# Directory movement 文件夹移动
+# -------------------------------------------------------------------
   alias up="cd .."
-  alias gs="git status"
+  alias bk="cd $OLDPWD" 
+
+
+# -------------------------------------------------------------------
+# Directory information 文件信息
+# -------------------------------------------------------------------
+   alias ls="ls --color=auto"
+   alias tree="ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'"
+   alias dus="du -sckx * | sort -nr" #根据文件大小排序
+
+# -------------------------------------------------------------------
+# 服务器 Servers
+# -------------------------------------------------------------------
+  alias is26="ssh root@is26.com"
+
+
+
+# -------------------------------------------------------------------
+# Git
+# -------------------------------------------------------------------
   alias gam="git commit -a -m"
   alias gc= "git checkout" 
+  alias gs="git status"
+
+  
+
+# -------------------------------------------------------------------
+# 系统相关 Mac
+# -------------------------------------------------------------------
+  #alias dns ="sudo killall -HUP mDNSResponder"
+  alias gfw="node fuckgfw/local.js" #shadowsocks翻墙
+  alias oo='open .' # open current directory in OS X Finder
+
+# -------------------------------------------------------------------
+# Android 
+# -------------------------------------------------------------------
+   alias adblb="adb forward tcp:9222 localabstract:liebao_devtools_remote"
+ 
+
+ 
+  
+  
 # Set to this to use case-sensitive completion
 # CASE_SENSITIVE="true"
 
@@ -64,5 +104,8 @@ source $ZSH/oh-my-zsh.sh
 export LC_ALL=en_US.UTF-8  
 export LANG=en_US.UTF-8
 
+#Android DEV
+export PATH=$PATH:/Users/luolei/Downloads/platform-tools/
+export PATH=$PATH:/Users/luolei/Dropbox/Development/platform-tools/
 #autojump Support
 
