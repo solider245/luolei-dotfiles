@@ -21,16 +21,16 @@ fe80::1%lo0	localhost
 10.33.35.53      air.luolei.cc
 10.33.33.10     mac.luolei.cc
 192.168.10.36    svn.sug.cc.
-10.33.33.10     v.m.liebao.cn
+#10.33.33.10     v.m.liebao.cn
 
 10.33.44.104     v.kimg.cn
-10.33.20.229     ksux.com   
+10.33.20.229     ksux.com
 10.33.20.229     www.ksux.com
 10.33.20.229     v.ksux.com
 
 #192.168.110.15 v.m.liebao.cn
 
-114.112.93.68  api.v.m.liebao.cn 
+#114.112.93.68  api.v.m.liebao.cn
 
 #10.33.29.84    v.m.liebao.cn
 #192.168.1.106 v.m.liebao.cn
@@ -38,5 +38,6 @@ fe80::1%lo0	localhost
 ##Wandoulabas
 192.168.109.149 move.luolei.cc
 192.168.110.15 luolei.mobi
+192.168.2.100 v.m.liebao.cn
 
-10.33.33.10 kingsoftV
+#192.168.2.100 KingsoftV
