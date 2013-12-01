@@ -6,6 +6,15 @@
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/oh-my-zsh
 
+# Setup terminal, and turn on colors
+export TERM=xterm-256color
+
+# Enable color in grep
+export GREP_OPTIONS='--color=auto'
+export GREP_COLOR='3;33'
+
+export EDITOR=vim
+
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
@@ -36,8 +45,16 @@ alias sz='source ~/.zshrc'
 # 服务器 Servers
 # -------------------------------------------------------------------
   alias is26="ssh root@is26.com"
+  alias ocean="ssh root@192.241.199.155"
 
 
+
+# -------------------------------------------------------------------
+# 快速编辑常用文件 Quick Edit 
+# -------------------------------------------------------------------
+ # alias vim ="/usr/bin/vim"
+ # alias ze ="vim ~/.zshrc" #
+  #alias he ="vim /etc/hosts" #
 
 # -------------------------------------------------------------------
 # Git
@@ -100,12 +117,13 @@ source $ZSH/oh-my-zsh.sh
 # Customize to your needs...
 # For luolei
 
-#Chinese Support
+#Chinese Support 中文支持
 export LC_ALL=en_US.UTF-8  
 export LANG=en_US.UTF-8
 
-#Android DEV
+#Android DEV 安卓Adb工具对应位置
 export PATH=$PATH:/Users/luolei/Downloads/platform-tools/
 export PATH=$PATH:/Users/luolei/Dropbox/Development/platform-tools/
+
 #autojump Support
 
