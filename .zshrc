@@ -8,18 +8,21 @@ ZSH=$HOME/oh-my-zsh
 
 # Setup terminal, and turn on colors
 export TERM=xterm-256color
+export CLICOLOR=1
+export LSCOLORS=Gxfxcxdxbxegedabagacad
 
 # Enable color in grep
 export GREP_OPTIONS='--color=auto'
 export GREP_COLOR='3;33'
 
-export EDITOR=vim
+alias edit=$EDITOR
+export EDITOR= "vim"
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="robbyrussell"
+ZSH_THEME="ys"
 
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
@@ -32,6 +35,9 @@ alias sz='source ~/.zshrc'
 # -------------------------------------------------------------------
   alias up="cd .."
   alias bk="cd $OLDPWD" 
+  alias ..='cd ..'
+  alias ...='cd ../..'
+  alias ....='cd ../../..'
 
 
 # -------------------------------------------------------------------
@@ -40,6 +46,7 @@ alias sz='source ~/.zshrc'
    alias ls="ls --color=auto"
    alias tree="ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'"
    alias dus="du -sckx * | sort -nr" #根据文件大小排序
+   alias lh='ls -d .*' # show hidden files/directories only #只显示隐藏文件
 
 # -------------------------------------------------------------------
 # 服务器 Servers
@@ -47,14 +54,13 @@ alias sz='source ~/.zshrc'
   alias is26="ssh root@is26.com"
   alias ocean="ssh root@192.241.199.155"
 
-
-
 # -------------------------------------------------------------------
 # 快速编辑常用文件 Quick Edit 
-# -------------------------------------------------------------------
- # alias vim ="/usr/bin/vim"
- # alias ze ="vim ~/.zshrc" #
-  #alias he ="vim /etc/hosts" #
+  # -------------------------------------------------------------------
+  #alias vim ="/usr/bin/vim"
+  #alias ze ="vim \~/.zshrc" #
+  #alias he ="$EDITOR /etc/hosts" #
+  alias hosts="edit /etc/hosts"
 
 # -------------------------------------------------------------------
 # Git
@@ -62,15 +68,19 @@ alias sz='source ~/.zshrc'
   alias gam="git commit -a -m"
   alias gc= "git checkout" 
   alias gs="git status"
+  alias gp='git push'
+  alias gl='git lg'
 
   
 
 # -------------------------------------------------------------------
-# 系统相关 Mac
+# 系统相关 Mac Only
 # -------------------------------------------------------------------
-  #alias dns ="sudo killall -HUP mDNSResponder"
+
+  alias dns="dscacheutil -flushcache"
   alias gfw="node fuckgfw/local.js" #shadowsocks翻墙
   alias oo='open .' # open current directory in OS X Finder
+
 
 # -------------------------------------------------------------------
 # Android 
@@ -78,8 +88,11 @@ alias sz='source ~/.zshrc'
    alias adblb="adb forward tcp:9222 localabstract:liebao_devtools_remote"
  
 
- 
-  
+#快速查看IP地址 
+function ipfor(){
+        dig +short $1 | grep -E '^[0-9.]+$' | head -1
+}
+
   
 # Set to this to use case-sensitive completion
 # CASE_SENSITIVE="true"
