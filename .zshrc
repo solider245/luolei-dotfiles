@@ -1,6 +1,6 @@
 
 #-------------------------------------------------------------------
-#Oh-my-ZSH 配置 -------- http://luolei.org 
+#Oh-my-ZSH 配置 -------- http://luolei.org
 #-------------------------------------------------------------------
 
 # Path to your oh-my-zsh configuration.
@@ -28,13 +28,13 @@ ZSH_THEME="ys"
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/oh-my-zsh"
 
-alias sz='source ~/.zshrc'
+alias sz='source ~/.zshrc' #重新执行
 
 # -------------------------------------------------------------------
 # Directory movement 文件夹移动
 # -------------------------------------------------------------------
   alias up="cd .."
-  alias bk="cd $OLDPWD" 
+  alias bk="cd $OLDPWD"
   alias ..='cd ..'
   alias ...='cd ../..'
   alias ....='cd ../../..'
@@ -47,18 +47,18 @@ alias sz='source ~/.zshrc'
    alias tree="ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'"
    alias dus="du -sckx * | sort -nr" #根据文件大小排序
    alias lh='ls -d .*' # show hidden files/directories only #只显示隐藏文件
+   alias map='traceroute' #路由跟踪
 
 # -------------------------------------------------------------------
 # 服务器 Servers
 # -------------------------------------------------------------------
   alias is26="ssh root@is26.com"
-  alias ocean="ssh root@192.241.199.155"
-
+  alias ocean="ssh -p 1717  luolei@192.241.199.155"
 # -------------------------------------------------------------------
 # 快速编辑常用文件 Quick Edit 
   # -------------------------------------------------------------------
   #alias vim ="/usr/bin/vim"
-  #alias ze ="vim \~/.zshrc" #
+  #alias ze ="vi \~/.zshrc" #
   #alias he ="$EDITOR /etc/hosts" #
   alias hosts="edit /etc/hosts"
 
