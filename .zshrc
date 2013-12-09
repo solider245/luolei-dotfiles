@@ -16,8 +16,9 @@ export GREP_OPTIONS='--color=auto'
 export GREP_COLOR='3;33'
 
 # 设置默认编辑器
-alias edit=$EDITOR
-export EDITOR= "vim"
+ alias vi='vim'
+ alias edit=$EDITOR
+ export EDITOR= "vim"
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
