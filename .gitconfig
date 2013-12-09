@@ -1,0 +1,21 @@
+[user]
+	name = luolei
+	email = meleilei@gmail.com
+[color]
+	ui = true
+	diff = auto
+	status = auto
+[push]
+	default = matching
+[alias]
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	lol = " log --graph --decorate --pretty=oneline --abbrev-commit --all"
+	lol = log --graph --decorate --pretty=oneline --abbrev-commit --all
+[core]
+	excludesfile = /Users/luolei/.gitignore_global
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true

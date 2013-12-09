@@ -1,0 +1,36 @@
+{
+	"auto_upgrade_last_run": null,
+	"installed_packages":
+	[
+		"AdvancedNewFile",
+		"Alignment",
+		"Autoprefixer",
+		"BracketHighlighter",
+		"ConvertToUTF8",
+		"css compact expand",
+		"CSScomb",
+		"EditorConfig",
+		"Emmet",
+		"Emmet Css Snippets",
+		"GitGutter",
+		"HTML5",
+		"Jade",
+		"Jade Snippets",
+		"JavaScript & NodeJS Snippets",
+		"jQuery Mobile Snippets",
+		"jQuery Snippets pack",
+		"JS Snippets",
+		"JsFormat",
+		"JSHint Gutter",
+		"LESS",
+		"Package Control",
+		"Placeholders",
+		"Pretty JSON",
+		"Sass",
+		"SideBarEnhancements",
+		"Tag",
+		"TernJS",
+		"Theme - Flatland",
+		"TrailingSpaces"
+	]
+}
