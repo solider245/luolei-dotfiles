@@ -3,10 +3,10 @@
 #Oh-my-ZSH 配置 -------- http://luolei.org
 #-------------------------------------------------------------------
 
-# Path to your oh-my-zsh configuration.
+# Path to your oh-my-zsh configuration.设置 ZSH默认路径
 ZSH=$HOME/oh-my-zsh
 
-# Setup terminal, and turn on colors
+# Setup terminal, and turn on colors 颜色配置
 export TERM=xterm-256color
 export CLICOLOR=1
 export LSCOLORS=Gxfxcxdxbxegedabagacad
@@ -15,6 +15,7 @@ export LSCOLORS=Gxfxcxdxbxegedabagacad
 export GREP_OPTIONS='--color=auto'
 export GREP_COLOR='3;33'
 
+# 设置默认编辑器
 alias edit=$EDITOR
 export EDITOR= "vim"
 
@@ -23,10 +24,6 @@ export EDITOR= "vim"
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
 ZSH_THEME="ys"
-
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/oh-my-zsh"
 
 alias sz='source ~/.zshrc' #重新执行
 
@@ -49,6 +46,12 @@ alias sz='source ~/.zshrc' #重新执行
    alias lh='ls -d .*' # show hidden files/directories only #只显示隐藏文件
    alias map='traceroute' #路由跟踪
 
+###列出系统最大的文件 快捷 maxfile 即可
+   maxfile(){
+   lsof / | awk '{ if($7 > 1048576) print $7/1048576 "MB "$9 }' | sort -n -u | tail
+   }
+###
+
 # -------------------------------------------------------------------
 # 服务器 Servers
 # -------------------------------------------------------------------
@@ -56,11 +59,15 @@ alias sz='source ~/.zshrc' #重新执行
   alias ocean="ssh -p 1717  luolei@192.241.199.155"
 # -------------------------------------------------------------------
 # 快速编辑常用文件 Quick Edit 
-  # -------------------------------------------------------------------
-  #alias vim ="/usr/bin/vim"
-  #alias ze ="vi \~/.zshrc" #
-  #alias he ="$EDITOR /etc/hosts" #
-  alias hosts="edit /etc/hosts"
+# -------------------------------------------------------------------
+
+###快速编辑
+  ze(){
+    vim ~/.zshrc
+  }
+  hosts(){
+    sudo vim /etc/hosts
+  }
 
 # -------------------------------------------------------------------
 # Git
@@ -88,7 +95,7 @@ alias sz='source ~/.zshrc' #重新执行
    alias adblb="adb forward tcp:9222 localabstract:liebao_devtools_remote"
  
 
-#快速查看IP地址 
+###快速查看IP地址 
 function ipfor(){
         dig +short $1 | grep -E '^[0-9.]+$' | head -1
 }
@@ -122,21 +129,21 @@ function ipfor(){
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git)
+# 选择你所需要的插件
+
+plugins=(git node brew svn)
 plugins=(autojump)
 source $ZSH/oh-my-zsh.sh
 
-# Customize to your needs...
+
 # For luolei
 
 #Chinese Support 中文支持
-export LC_ALL=en_US.UTF-8  
+export LC_ALL=en_US.UTF-8 
 export LANG=en_US.UTF-8
 
 #Android DEV 安卓Adb工具对应位置
 export PATH=$PATH:/Users/luolei/Downloads/platform-tools/
 export PATH=$PATH:/Users/luolei/Dropbox/Development/platform-tools/
 
-#autojump Support
 
