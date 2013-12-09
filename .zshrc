@@ -135,7 +135,7 @@ function ipfor(){
 plugins=(git node brew svn)
 plugins=(autojump)
 source $ZSH/oh-my-zsh.sh
-
+#source ~/.nvm/nvm.sh
 
 # For luolei
 
