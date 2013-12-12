@@ -147,4 +147,5 @@ export LANG=en_US.UTF-8
 export PATH=$PATH:/Users/luolei/Downloads/platform-tools/
 export PATH=$PATH:/Users/luolei/Dropbox/Development/platform-tools/
 
-
+#SVN 设置
+export PATH=/usr/bin:$PATH
