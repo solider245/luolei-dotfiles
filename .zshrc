@@ -78,7 +78,7 @@ alias sz='source ~/.zshrc' #重新执行
   alias gs="git status"
   alias gp='git push'
   alias gl='git lg'
-
+  alias gb='git branch'
   
 
 # -------------------------------------------------------------------
