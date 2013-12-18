@@ -45,6 +45,7 @@ alias sz='source ~/.zshrc' #重新执行
    alias tree="ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'"
    alias dus="du -sckx * | sort -nr" #根据文件大小排序
    alias lh='ls -d .*' # show hidden files/directories only #只显示隐藏文件
+   alias ld="ls -lih"
    alias map='traceroute' #路由跟踪
 
 ###列出系统最大的文件 快捷 maxfile 即可
