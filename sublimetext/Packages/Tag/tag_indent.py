@@ -96,7 +96,7 @@ def TagIndentBlock(data, view):
 					beauty += current_indentation
 					if not no_indent_match:
 						level = level - 1
-			elif f[:2]=='</':
+			elif f[:2]=='</' or  f[:3]=='<\\/':
 				if not no_indent_match:
 					level = level - 1
 				#beauty += '3'

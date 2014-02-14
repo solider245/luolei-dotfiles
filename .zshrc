@@ -52,10 +52,10 @@ alias sz='source ~/.zshrc' #重新执行
 # -------------------------------------------------------------------
 # 服务器 Servers
 # -------------------------------------------------------------------
-  alias is26="ssh root@is26.com"
+  alias is26="ssh root@host.is26.com"
   alias ocean="ssh -p 1717  luolei@192.241.199.155"
   alias beijing="ssh luolei@vps.glowface.net"
-
+  alias aliyun="ssh root@aliyun.is26.com"
 # -------------------------------------------------------------------
 # VPS 相关 Servers in air
 # -------------------------------------------------------------------
