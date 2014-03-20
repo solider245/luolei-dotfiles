@@ -9,7 +9,6 @@ except:
 	# Python 2
 	from editorconfig import get_properties, EditorConfigError
 
-
 LINE_ENDINGS = {
 	'lf': 'unix',
 	'crlf': 'windows',
@@ -50,20 +49,27 @@ class EditorConfig(sublime_plugin.EventListener):
 		else:
 			if config:
 				if pre_save:
-					self.apply_charset(view, config)
+					self.apply_pre_save(view, config)
 				else:
 					self.apply_config(view, config)
 
-	def apply_charset(self, view, config):
+	def apply_pre_save(self, view, config):
 		charset = config.get('charset')
+		end_of_line = config.get('end_of_line')
+		indent_style = config.get('indent_style')
 		if charset in CHARSETS:
 			view.set_encoding(CHARSETS[charset])
+		if end_of_line in LINE_ENDINGS:
+			view.set_line_endings(LINE_ENDINGS[end_of_line])
+		if indent_style == 'space':
+			view.run_command('expand_tabs', {'set_translate_tabs': True})
+		elif indent_style == 'tab':
+			view.run_command('unexpand_tabs', {'set_translate_tabs': True})
 
 	def apply_config(self, view, config):
 		settings = view.settings()
 		indent_style = config.get('indent_style')
 		indent_size = config.get('indent_size')
-		end_of_line = config.get('end_of_line')
 		trim_trailing_whitespace = config.get('trim_trailing_whitespace')
 		insert_final_newline = config.get('insert_final_newline')
 		if indent_style == 'space':
@@ -75,8 +81,6 @@ class EditorConfig(sublime_plugin.EventListener):
 				settings.set('tab_size', int(indent_size))
 			except ValueError:
 				pass
-		if end_of_line in LINE_ENDINGS:
-			view.set_line_endings(LINE_ENDINGS[end_of_line])
 		if trim_trailing_whitespace == 'true':
 			settings.set('trim_trailing_white_space_on_save', True)
 		elif trim_trailing_whitespace == 'false':

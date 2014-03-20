@@ -83,7 +83,7 @@ alias sz='source ~/.zshrc' #重新执行
   alias gb='git branch'
   alias gm='git commit -m'
   alias gd='git diff' #显示缓存变化
-
+  alias grhh='git reset --hard HEAD'
 # -------------------------------------------------------------------
 # SVN 配置
 # -------------------------------------------------------------------
@@ -126,6 +126,11 @@ function hittp {
   python -m SimpleHTTPServer
 }
 
+###快速查看IP地址
+function ipfor(){
+        dig +short $1 | grep -E '^[0-9.]+$' | head -1
+}
+
 
 # -------------------------------------------------------------------
 # 系统相关 Mac Only
@@ -141,11 +146,14 @@ function hittp {
 # -------------------------------------------------------------------
    alias adblb="adb forward tcp:9222 localabstract:liebao_devtools_remote"
 
+# -------------------------------------------------------------------
+# 开发相关
+# -------------------------------------------------------------------
 
-###快速查看IP地址
-function ipfor(){
-        dig +short $1 | grep -E '^[0-9.]+$' | head -1
-}
+  alias gt="grunt"
+  alias gwb="grunt watch:base"
+  alias gbl="grunt bundle"
+  alias gpb="grunt publish"
 
 
 # Set to this to use case-sensitive completion
