@@ -123,6 +123,7 @@ function svn {
 # -------------------------------------------------------------------
 # 利用 python 内置快速建立个简单的服务器
 function hittp {
+  echo '你的服务器地址是:' $lanip':8000'
   python -m SimpleHTTPServer
 }
 
@@ -131,6 +132,14 @@ function ipfor(){
         dig +short $1 | grep -E '^[0-9.]+$' | head -1
 }
 
+###快速查看本机IP地址
+function myip(){
+	myip="$(ifconfig | grep 'inet.*netmask.*broadcast')" 
+	lanip="$(echo $myip | awk '{print $2}')"
+	publicip="$(echo $myip | awk '{print $6}')"
+	echo '你的局域网IP是: '$lanip
+	echo '你的外网IP是: '$publicip
+}
 
 # -------------------------------------------------------------------
 # 系统相关 Mac Only

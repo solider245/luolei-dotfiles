@@ -1,4 +1,4 @@
-# JavaScript Snippets for Sublime [![Build Status](https://secure.travis-ci.org/zenorocha/sublime-snippets-js.png?branch=master)](https://travis-ci.org/zenorocha/sublime-snippets-js)
+# JavaScript Snippets for Sublime [![Build Status](https://secure.travis-ci.org/zenorocha/sublime-javascript-snippets.png?branch=master)](https://travis-ci.org/zenorocha/sublime-javascript-snippets)
 
 ![Demo](http://zno.io/QopI/subime-snippet.gif)
 
@@ -42,7 +42,7 @@ console.warn(${1:obj});
 
 ```javascript
 ${1:document}.addEventListener('${2:event}', function(e) {
-	${0:// body...}
+	${3}
 });
 ```
 
@@ -153,17 +153,17 @@ ${1:document}.querySelectorAll('${2:selector}');
 ### [fe] forEach
 
 ```javascript
-${1:myArray}.forEach(function (${2:elem}) {
-	${0:// body...}
+${1:myArray}.forEach(function(${2:elem}) {
+	${3}
 });
 ```
 
 ### [fi] for in
 
 ```javascript
-for (var ${1:prop} in ${2:obj}) {
+for (${1:prop} in ${2:obj}) {
 	if (${2:obj}.hasOwnProperty(${1:prop})) {
-		${0:// body...}
+		${3}
 	}
 }
 ```
@@ -173,8 +173,8 @@ for (var ${1:prop} in ${2:obj}) {
 ### [fn] function
 
 ```javascript
-function ${1:methodName} (${2:arguments}) {
-	${0:// body...}
+function ${1:methodName}(${2:arguments}) {
+	${3}
 }
 ```
 
@@ -182,7 +182,7 @@ function ${1:methodName} (${2:arguments}) {
 
 ```javascript
 function(${1:arguments}) {
-	${0:// body...}
+	${2}
 }
 ```
 
@@ -190,15 +190,15 @@ function(${1:arguments}) {
 
 ```javascript
 ${1:ClassName}.prototype.${2:methodName} = function(${3:arguments}) {
-	${0:// body...}
+	${4}
 }
 ```
 
 ### [iife] immediately-invoked function expression
 
 ```javascript
-(function (window, document, undefined) {
-	${0:// body...}
+(function(window, document, undefined) {
+	${1}
 })(window, document);
 ```
 
@@ -214,13 +214,21 @@ ${1:methodName}.call(${2:context}, ${3:arguments})
 ${1:methodName}.apply(${2:context}, [${3:arguments}])
 ```
 
+### [ofn] function as a property of an object
+
+```javascript
+${1:functionName}: function (${2:arguments}) {
+	${3}
+}
+```
+
 ## Timer
 
 ### [si] setInterval
 
 ```javascript
 setInterval(function() {
-	${0:// body...}
+	${2}
 }, ${1:delay});
 ```
 
@@ -228,7 +236,7 @@ setInterval(function() {
 
 ```javascript
 setTimeout(function() {
-	${0:// body...}
+	${2}
 }, ${1:delay});
 ```
 
@@ -274,23 +282,23 @@ require('${1:module}');
 ### [desc] describe
 
 ```javascript
-describe('${1:description}', function () {
-	${0:// body...}
+describe('${1:description}', function() {
+	${2}
 });
 ```
 ### [ita] it asynchronous
 
 ```javascript
-it('${1:description}', function (done) {
-	${0:// body...}
+it('${1:description}', function(done) {
+	${2}
 });
 ```
 
 ### [its] it synchronous
 
 ```javascript
-it('${1:description}', function () {
-	${0:// body...}
+it('${1:description}', function() {
+	${2}
 });
 ```
 
@@ -324,7 +332,7 @@ prompt('${1:msg}');
 
 ## History
 
-Check [Release](https://github.com/zenorocha/sublime-snippets-js/releases) list.
+Check [Release](https://github.com/zenorocha/sublime-javascript-snippets/releases) list.
 
 ## License
 
