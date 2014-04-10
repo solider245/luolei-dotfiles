@@ -2,27 +2,27 @@
 #Oh-my-ZSH 配置 -------- http://luolei.org
 #-------------------------------------------------------------------
 # Path to your oh-my-zsh configuration.设置 ZSH默认路径
-ZSH=$HOME/oh-my-zsh
+  ZSH=$HOME/oh-my-zsh
 
 # Setup terminal, and turn on colors 颜色配置
-export TERM=xterm-256color
-export CLICOLOR=1
-export LSCOLORS=Gxfxcxdxbxegedabagacad
+  export TERM=xterm-256color
+  export CLICOLOR=1
+  export LSCOLORS=Gxfxcxdxbxegedabagacad
 
 # Enable color in grep
-export GREP_OPTIONS='--color=auto'
-export GREP_COLOR='3;33'
+  export GREP_OPTIONS='--color=auto'
+  export GREP_COLOR='3;33'
 
 # 设置默认编辑器
- alias vi='vim'
- alias edit=$EDITOR
- export EDITOR= "vim"
+  alias vi='vim'
+  alias edit=$EDITOR
+  export EDITOR= "vim"
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
-ZSH_THEME="ys"
 
-alias sz='source ~/.zshrc' #重新执行
+  ZSH_THEME="ys"
+  alias sz='source ~/.zshrc' #重新执行
 
 # -------------------------------------------------------------------
 # Directory movement 文件夹移动
@@ -32,6 +32,7 @@ alias sz='source ~/.zshrc' #重新执行
   alias ..='cd ..'
   alias ...='cd ../..'
   alias ....='cd ../../..'
+  alias godesk='cd ~/Desktop'
 # -------------------------------------------------------------------
 # Directory information 文件信息
 # -------------------------------------------------------------------
@@ -43,6 +44,12 @@ alias sz='source ~/.zshrc' #重新执行
    alias map='traceroute' #路由跟踪
    alias tgz='tar -czf' #tar -czf [文件名] [被压缩文件] gzip压缩
    alias ugz='tar -xzf' #tar -xzf [被压缩文件]
+   #
+   alias cleanDS='find . -name ".DS_Store" -print0 | xargs -0 rm -rf' #清除目录下的 DS_Store文件
+   
+   fucntion mkd(){
+  	mkdir -p "$@" && cd "$@"
+   }
 ###列出系统最大的文件 快捷 maxfile 即可
    maxfile(){
    lsof / | awk '{ if($7 > 1048576) print $7/1048576 "MB "$9 }' | sort -n -u | tail
@@ -123,6 +130,7 @@ function svn {
 # -------------------------------------------------------------------
 # 利用 python 内置快速建立个简单的服务器
 function hittp {
+  myip
   echo '你的服务器地址是:' $lanip':8000'
   python -m SimpleHTTPServer
 }
