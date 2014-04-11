@@ -15,21 +15,27 @@ Plugin 'scrooloose/syntastic'
 " 绑定键位
 nmap <C-a> <home> 
 nmap <C-e> <end>
-nmap <C-d> <Delete>
+nmap <C-d> <Delet>
 imap jj <Esc>  
 imap ;; <Esc>
+nmap XX :q<CR>	" 不保存退出
+nmap XXX :q!<CR>	" 不保存退出
+nmap ZW :w<CR>  " 不退出vim保存
+
+
 filetype plugin indent on     " equired
 Bundle "mattn/emmet-vim"
 let g:user_emmet_install_global = 0
 autocmd FileType html,css EmmetInstall
 
+
 " 基础
 syntax on
 set ai
 set history=100
-set hlsearch
-filetype plugin on
-set number
+set hlsearch		" 高亮搜索结果
+filetype plugin on 
+set number "显示行数
 set cursorline
 set foldenable
 set foldmethod=syntax
@@ -37,14 +43,13 @@ set mouse=a
 set clipboard=unnamed
 set matchpairs+=<:>
 set laststatus=2
-
-" Default Indentation
 set autoindent
 set smartindent     " indent when
-set tabstop=4       " tab width
+set tabstop=4       " 设置一个TAB字符长度
 set softtabstop=4   " backspace
 set shiftwidth=4    " indent width
-
+set ignorecase		" 搜索忽略大小写
+set confirm			" 当 :q, :w, 或:wq 失败的时候提示
 " enable filetype dectection and ft specific plugin/indent
 filetype plugin indent on
 
@@ -56,7 +61,5 @@ autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 textwidth=
 autocmd FileType html,htmldjango,xhtml,haml,tpl setlocal tabstop=2 shiftwidth=2 softtabstop=2 textwidth=0
 autocmd FileType sass,scss,css setlocal tabstop=4 shiftwidth=4 softtabstop=4 textwidth=120
 
-
-imap jj <Esc>
 
 
