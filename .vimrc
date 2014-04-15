@@ -24,7 +24,11 @@ nmap ZW :w<CR>  " 不退出vim保存
 
 
 filetype plugin indent on     " equired
+" 插件管理
 Bundle "mattn/emmet-vim"
+Bundle 'mattn/webapi-vim'
+Bundle 'mattn/gist-vim'
+
 let g:user_emmet_install_global = 0
 autocmd FileType html,css EmmetInstall
 

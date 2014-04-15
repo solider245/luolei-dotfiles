@@ -90,8 +90,8 @@
 	"hot_exit": true,
 	"ignored_packages":
 	[
-		"Vintage",
-		"Tag"
+		"Tag",
+		"Vintage"
 	],
 	"indent_guide_options":
 	[
