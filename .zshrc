@@ -92,7 +92,7 @@ mkdir -p "$@" && cd "$@"
    alias gb='git branch'
    alias gm='git commit -m'
    alias gd='git diff' #显示缓存变化
-   alias grhh='git reset --hard HEAD'
+   alias ghard='git reset --hard'
    # -------------------------------------------------------------------
    # SVN 配置
    # -------------------------------------------------------------------
@@ -209,7 +209,11 @@ plugins=(git node brew svn)
 plugins=(autojump)
 source $ZSH/oh-my-zsh.sh
 #source ~/.nvm/nvm.sh
-
+#Npm相关
+alias cnpm="npm --registry=http://r.cnpmjs.org \
+	--cache=$HOME/.npm/.cache/cnpm \
+	--disturl=http://dist.cnpmjs.org \
+	--userconfig=$HOME/.cnpmrc"
 # For luolei
 
 #Chinese Support 中文支持
