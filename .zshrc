@@ -44,6 +44,7 @@ alias ld="ls -lih"
 alias map='traceroute' #路由跟踪
 alias tgz='tar -czf' #tar -czf [文件名] [被压缩文件] gzip压缩
 alias ugz='tar -xzf' #tar -xzf [被压缩文件]
+alias pwd='pwd && pwd | pbcopy' #查看当前路径并且复制
 #
 alias cleanDS='find . -name ".DS_Store" -print0 | xargs -0 rm -rf' #清除目录下的 DS_Store文件
 
@@ -223,7 +224,6 @@ export LANG=en_US.UTF-8
 #Android DEV 安卓Adb工具对应位置
 export PATH=$PATH:$HOME/Downloads/platform-tools/
 export PATH=$PATH:$HOME/Dropbox/Development/platform-tools/
-
 #SVN 设置
 export PATH=/usr/bin:$PATH
 
