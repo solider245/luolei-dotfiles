@@ -1,6 +1,6 @@
 [
     {
-        "caption": "Sort via CSScomb",
-        "command": "css_sorter"
+        "caption": "Run CSScomb JS",
+        "command": "css_comb"
     }
 ]

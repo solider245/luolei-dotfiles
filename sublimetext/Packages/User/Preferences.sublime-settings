@@ -90,10 +90,10 @@
 	"hot_exit": true,
 	"ignored_packages":
 	[
-		"Theme - Spacegray",
 		"Vintage",
+		"Tag",
 		"SideBarEnhancements",
-		"Tag"
+		"Theme - Spacegray"
 	],
 	"indent_guide_options":
 	[

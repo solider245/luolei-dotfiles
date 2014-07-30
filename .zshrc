@@ -33,6 +33,7 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias godesk='cd ~/Desktop'
+
 # -------------------------------------------------------------------
 # Directory information 文件信息
 # -------------------------------------------------------------------
@@ -45,6 +46,7 @@ alias map='traceroute' #路由跟踪
 alias tgz='tar -czf' #tar -czf [文件名] [被压缩文件] gzip压缩
 alias ugz='tar -xzf' #tar -xzf [被压缩文件]
 alias pwd='pwd && pwd | pbcopy' #查看当前路径并且复制
+
 #
 alias cleanDS='find . -name ".DS_Store" -print0 | xargs -0 rm -rf' #清除目录下的 DS_Store文件
 
@@ -134,14 +136,22 @@ print cpt_c, " conflicts are found.";
 # 利用 python 内置快速建立个简单的服务器
 function hittp {
 myip
-echo '你的服务器地址是:' $lanip':8000'
-python -m SimpleHTTPServer
+echo '你的服务器地址是:' $lanip
+python -m SimpleHTTPServer $1
 }
 
 ###快速查看IP地址
 function ipfor(){
 dig +short $1 | grep -E '^[0-9.]+$' | head -1
 }
+
+###快速开启apache
+
+function hiweb {
+sudo apachectl start
+
+}
+
 
 ###快速查看本机IP地址
 function myip(){

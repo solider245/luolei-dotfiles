@@ -28,8 +28,16 @@ filetype plugin indent on     " equired
 Bundle "mattn/emmet-vim"
 Bundle 'mattn/webapi-vim'
 Bundle 'mattn/gist-vim'
+Bundle 'Lokaltog/vim-easymotion'
 
 let g:user_emmet_install_global = 0
+let g:EasyMotion_leader_key = 'f'
+map  / <Plug>(easymotion-sn)
+omap / <Plug>(easymotion-tn)
+map n <Plug>(easymotion-next)
+map N <Plug>(easymotion-prev)
+nmap s <Plug>(easymotion-s2)
+nmap t <Plug>(easymotion-t2)
 autocmd FileType html,css EmmetInstall
 
 
