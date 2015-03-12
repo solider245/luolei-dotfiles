@@ -57,6 +57,28 @@ mkdir -p "$@" && cd "$@"
    maxfile(){
 	   lsof / | awk '{ if($7 > 1048576) print $7/1048576 "MB "$9 }' | sort -n -u | tail
    }
+
+extract () {
+    if [ -f $1 ] ; then
+      case $1 in
+        *.tar.bz2)   tar xjf $1     ;;
+        *.tar.gz)    tar xzf $1     ;;
+        *.bz2)       bunzip2 $1     ;;
+        *.rar)       unrar e $1     ;;
+        *.gz)        gunzip $1      ;;
+        *.tar)       tar xf $1      ;;
+        *.tbz2)      tar xjf $1     ;;
+        *.tgz)       tar xzf $1     ;;
+        *.zip)       unzip $1       ;;
+        *.Z)         uncompress $1  ;;
+        *.7z)        7z x $1        ;;
+        *)     echo "'$1' cannot be extracted via extract()" ;;
+         esac
+     else
+         echo "'$1' is not a valid file"
+     fi
+}
+
    ###
 
    # -------------------------------------------------------------------
@@ -93,7 +115,6 @@ mkdir -p "$@" && cd "$@"
    alias gp='git push'
    alias gl="git log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit "
    alias gb='git branch'
-   alias gm='git commit -m'
    alias gd='git diff' #显示缓存变化
    alias ghard='git reset --hard'
    # -------------------------------------------------------------------
@@ -155,7 +176,7 @@ sudo apachectl start
 
 ###快速查看本机IP地址
 function myip(){
-myip="$(ifconfig | grep 'inet.*netmask.*broadcast')" 
+myip="$(ifconfig | grep 'inet.*netmask.*broadcast')"
 lanip="$(echo $myip | awk '{print $2}')"
 publicip="$(echo $myip | awk '{print $6}')"
 echo '你的局域网IP是: '$lanip
@@ -167,7 +188,7 @@ echo '你的外网IP是: '$publicip
 # -------------------------------------------------------------------
 
 alias dns="dscacheutil -flushcache"
-alias gfw="node $HOME/fuckgfw/local.js" #shadowsocks翻墙
+alias gfw="cd $HOME/fuckgfw/GFWconfig && oo && sslocal -c /ocean/config.json " #shadowsocks翻墙
 alias oo='open .' # open current directory in OS X Finder
 
 

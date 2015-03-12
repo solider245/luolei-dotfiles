@@ -1,22 +1,31 @@
 {
 	"auto_upgrade_last_run": null,
+	"in_process_packages":
+	[
+	],
 	"installed_packages":
 	[
 		"AdvancedNewFile",
 		"Alignment",
 		"Autoprefixer",
+		"Babel",
 		"BracketHighlighter",
 		"Codecs33",
+		"Color Highlighter",
 		"ConvertToUTF8",
 		"css compact expand",
 		"CSScomb",
+		"DeleteBlankLines",
 		"DocBlockr",
 		"EditorConfig",
 		"Emmet",
 		"Emmet Css Snippets",
 		"GitGutter",
 		"Handlebars",
+		"HTML Minifier",
+		"HTML-CSS-JS Prettify",
 		"HTML5",
+		"Indent and braces",
 		"Jade",
 		"Jade Snippets",
 		"JavaScript & NodeJS Snippets",
@@ -38,6 +47,7 @@
 		"TernJS",
 		"Theme - Flatland",
 		"Theme - Spacegray",
-		"TrailingSpaces"
+		"TrailingSpaces",
+		"View In Browser"
 	]
 }

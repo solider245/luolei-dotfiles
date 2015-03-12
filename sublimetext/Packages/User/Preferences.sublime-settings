@@ -31,9 +31,10 @@
 		"*.zip"
 	],
 	"bold_folder_labels": true,
+	"caret_extra_width": 2,
 	"caret_style": "smooth",
 	"close_windows_when_empty": true,
-	"color_scheme": "Packages/Theme - Flatland/Flatland Monokai.tmTheme",
+	"color_scheme": "Packages/Seti_UI/Seti.tmTheme",
 	"create_window_at_startup": true,
 	"default_encoding": "UTF-8",
 	"default_line_ending": "system",
@@ -79,7 +80,7 @@
 		".hg",
 		"CVS"
 	],
-	"font_face": "Source Code Pro",
+	"font_face": "menlo",
 	"font_options":
 	[
 	],
@@ -90,10 +91,17 @@
 	"hot_exit": true,
 	"ignored_packages":
 	[
-		"SideBarEnhancements",
 		"Theme - Spacegray",
+		"SassBeautify",
+		"Vintage",
+		"Abacus",
+		"SideBarEnhancements",
+		"GitGutter",
 		"Tag",
-		"Vintage"
+		"Color Highlighter",
+		"ConvertToUTF8",
+		"tern_for_sublime",
+		"HTML5"
 	],
 	"indent_guide_options":
 	[
@@ -131,7 +139,7 @@
 	"spell_check": false,
 	"tab_completion": true,
 	"tab_size": 4,
-	"theme": "Flatland Dark.sublime-theme",
+	"theme": "Seti.sublime-theme",
 	"translate_tabs_to_spaces": false,
 	"tree_animation_enabled": true,
 	"trim_automatic_white_space": true,
@@ -139,6 +147,6 @@
 	"use_simple_full_screen": false,
 	"use_tab_stops": true,
 	"word_separators": "./\\()\"':,.;<>~!@#$%^&*|+=[]{}`~?",
-	"word_wrap": "auto",
+	"word_wrap": "true",
 	"wrap_width": 0
 }
