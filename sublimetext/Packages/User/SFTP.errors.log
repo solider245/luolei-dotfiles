@@ -1,4 +1,0 @@
-2012-12-27 21:58:12
-Traceback (most recent call last):
-  File "./sftp/secure_input.py", line 39, in show_input
-AttributeError: 'NoneType' object has no attribute 'show_input_panel'

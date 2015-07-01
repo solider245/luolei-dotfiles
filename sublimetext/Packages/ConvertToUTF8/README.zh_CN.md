@@ -9,14 +9,11 @@
 ![支付宝钱包扫一下](http://dl.dropboxusercontent.com/u/31937639/alipay_code.png) 或 
 [![PayPal捐助](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=GP6Y25N7Q9E26&lc=US&item_name=Buy%20me%20a%20cup%20of%20coffee&item_number=ConvertToUTF8&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHostedGuest)
 
-
 注意
 ------------------
-** Linux 用户：Sublime Text 2 和 3 内嵌 Python 版本中缺失几个 ConvertToUTF8 依赖的动态库。您必须手工安装这些文件才能让本插件完全运作。
+** Windows 7（Sublime Text 3）：当设置Windows自定义文本大小（DPI）超过100%时，文件名可能无法正确显示，请尝试在Sublime Text 3的用户设置中添加`"dpi_scale": 1`。
 
-** OS X 用户：Sublime Text 3 使用的内嵌 Python 存在与 Linux 版本相同的问题。
-
-** 我已将此问题报告给 Jon 但未收到任何回复，因此我创建了额外的插件来解决它。ConvertToUTF8 会在需要时显示相应说明。
+** Linux（Sublime Text 2 & 3）及OSX（Sublime Text 3）：你需要安装一个额外插件以便ConvertToUTF8能正常工作：[Codecs26](https://github.com/seanliang/Codecs26)（针对 Sublime Text 2）或 [Codecs33](https://github.com/seanliang/Codecs33)（针对 Sublime Text 3）。
 
 安装
 ------------------
@@ -35,11 +32,12 @@
 * encoding_list：检测失败时显示的编码列表
 * max_cache_size：最大编码缓存数量，0 表示不缓存（默认为 100）
 * max_detect_lines：最大检测行数，0 表示不限制（默认为 600）
-* preview_action：指定预览模式下的动作，可选项：no_action 不作任何动作，convert_and_open 转换编码并打开（默认为 no_action）
-* default_encoding_on_create：指定新建文件的默认编码（如 GBK），空值表示使用 Sublime Text 的 default_encoding 设置（默认为空值）
-* convert_on_load：启用/禁用文件装载时将窗口内容转换成UTF-8编码，可选项：always 自动转换，never 不转换（默认为 always）
-* convert_on_save：启用/禁用文件保存时将其从UTF-8转换成指定转码，可选项：always 自动转换，never 不转换（默认为 always）
-* lazy_reload：启用/禁用将文件保存到临时位置，并在切换窗口或标签时在后台自动重载，可选项：true，false（默认为 false）
+* preview_action：预览文件时是否将其内容转换为 UTF-8（默认为 false）
+* default_encoding_on_create：指定新建文件的默认编码（如 GBK），空值表示使用 Sublime Text 的 default_encoding 设置（默认为 ""）
+* convert_on_load：文件装载时是否将其内容转换成 UTF-8（默认为 true）
+* convert_on_save：文件保存时是否将其内容转换成原有（或指定）编码（默认为 true）
+* convert_on_find：将 Find Results 窗口里的内容转换成 UTF-8（默认为 false）
+* lazy_reload：将文件保存到临时位置，并在切换窗口或标签时在后台自动重载（默认为 false）
 
 使用说明
 ------------------
@@ -48,11 +46,10 @@
 您也可以通过 File > Set File Encoding to 菜单对文件编码进行手工转换。例如，您可以打开一个 UTF-8 编码的文件，指定保存为 GBK，反之亦然。
 
 注意：
-* 如果 convert_on_save 被设置为 never，文件不会被保存成指定编码
+* 如果 convert_on_save 被设置为 `false`，文件*不会*被保存成指定编码
 * 在文件编码检测过程完成前请勿编辑文件
 * 若检测结果不准确，请尝试增大 max_detect_lines 的值或手工指定编码
-* 由于 API 限制，在 lazy_reload 设置为 true 时，保存文件后立即退出 Sublime Text 将造成文件被保存为 UTF-8，正确的内容将在下次 Sublime Text 打开时重载
-
+* 由于 API 限制，在 lazy_reload 设置为 `true` 时，保存文件后立即退出 Sublime Text 将造成文件被保存为 UTF-8，正确的内容将在下次 Sublime Text 打开时重载
 
 常见问题
 ------------------

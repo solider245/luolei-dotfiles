@@ -1,4 +1,3 @@
-#-------------------------------------------------------------------
 #Oh-my-ZSH 配置 -------- http://luolei.org
 #-------------------------------------------------------------------
 # Path to your oh-my-zsh configuration.设置 ZSH默认路径
@@ -58,74 +57,77 @@ mkdir -p "$@" && cd "$@"
 	   lsof / | awk '{ if($7 > 1048576) print $7/1048576 "MB "$9 }' | sort -n -u | tail
    }
 
-extract () {
-    if [ -f $1 ] ; then
-      case $1 in
-        *.tar.bz2)   tar xjf $1     ;;
-        *.tar.gz)    tar xzf $1     ;;
-        *.bz2)       bunzip2 $1     ;;
-        *.rar)       unrar e $1     ;;
-        *.gz)        gunzip $1      ;;
-        *.tar)       tar xf $1      ;;
-        *.tbz2)      tar xjf $1     ;;
-        *.tgz)       tar xzf $1     ;;
-        *.zip)       unzip $1       ;;
-        *.Z)         uncompress $1  ;;
-        *.7z)        7z x $1        ;;
-        *)     echo "'$1' cannot be extracted via extract()" ;;
-         esac
-     else
-         echo "'$1' is not a valid file"
-     fi
-}
+   extract () {
+	   if [ -f $1 ] ; then
+		   case $1 in
+			   *.tar.bz2)   tar xjf $1     ;;
+		   *.tar.gz)    tar xzf $1     ;;
+	   *.bz2)       bunzip2 $1     ;;
+   *.rar)       unrar e $1     ;;
+		*.gz)        gunzip $1      ;;
+	*.tar)       tar xf $1      ;;
+*.tbz2)      tar xjf $1     ;;
+		*.tgz)       tar xzf $1     ;;
+	*.zip)       unzip $1       ;;
+*.Z)         uncompress $1  ;;
+		*.7z)        7z x $1        ;;
+	*)     echo "'$1' cannot be extracted via extract()" ;;
+esac
+	 else
+		 echo "'$1' is not a valid file"
+	 fi
+ }
 
-   ###
+ ###
 
-   # -------------------------------------------------------------------
-   # 服务器 Servers
-   # -------------------------------------------------------------------
-   alias is26="ssh -p 1818 luolei@173.255.255.242"
-   alias ocean="ssh -p 1717  luolei@192.241.199.155"
-   alias beijing="ssh luolei@vps.glowface.net"
-   alias aliyun="ssh root@aliyun.is26.com"
-   # -------------------------------------------------------------------
-   # VPS 相关 Servers in air
-   # -------------------------------------------------------------------
+ # -------------------------------------------------------------------
+ # 服务器 Servers
+ # -------------------------------------------------------------------
+ #alias is26="ssh -p 1818 luolei@173.255.255.242"
+ alias jpluolei="ssh -p 1818 luolei@106.187.102.77"
+ alias ocean="ssh -p 1717  luolei@192.241.199.155"
+ alias aliyun="ssh root@aliyun.is26.com"
+ alias aliluolei="ssh luolei@aliyun.is26.com"
+ alias yiluolei="ssh luolei@42.96.192.25"
 
-   # -------------------------------------------------------------------
-   # 快速编辑常用文件 Quick Edit
-   # -------------------------------------------------------------------
+ # -------------------------------------------------------------------
+ # VPS 相关 Servers in air
+ # -------------------------------------------------------------------
 
-   ###快速编辑
-   ze(){
-	   vim ~/.zshrc  #编辑ZSH配置文件
-   }
-   hosts(){
-	   sudo vim /etc/hosts  #编辑 hosts 文件
-   }
-   vimrc(){
-	   vim ~/.vimrc #编辑vim配置
-   }
-   # -------------------------------------------------------------------
-   # Git
-   # -------------------------------------------------------------------
-   alias gam="git commit -a -m"
-   alias gc= "git checkout"
-   alias gs="git status"
-   alias gp='git push'
-   alias gl="git log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit "
-   alias gb='git branch'
-   alias gd='git diff' #显示缓存变化
-   alias ghard='git reset --hard'
-   # -------------------------------------------------------------------
-   # SVN 配置
-   # -------------------------------------------------------------------
+ # -------------------------------------------------------------------
+ # 快速编辑常用文件 Quick Edit
+ # -------------------------------------------------------------------
 
-   #给svn 添加颜色区分
-   function svn {
-   command svn "$@" | awk '
-   BEGIN {
-   cpt_c=0;
+ ###快速编辑
+ ze(){
+	 vim ~/.zshrc  #编辑ZSH配置文件
+ }
+ hosts(){
+	 sudo vim /etc/hosts  #编辑 hosts 文件
+ }
+ vimrc(){
+	 vim ~/.vimrc #编辑vim配置
+ }
+ # -------------------------------------------------------------------
+ # Git
+ # -------------------------------------------------------------------
+ alias gam="git commit -a -m"
+ alias gc= "git checkout"
+ alias gs="git status"
+ alias gp='git push'
+ alias gl="git log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit "
+ alias gb='git branch'
+ alias gd='git diff' #显示缓存变化
+ alias ghard='git reset --hard'
+ # -------------------------------------------------------------------
+ # SVN 配置
+ # -------------------------------------------------------------------
+
+ #给svn 添加颜色区分
+ function svn {
+ command svn "$@" | awk '
+ BEGIN {
+ cpt_c=0;
   }
   {
 	  if        ($1=="C") {
@@ -188,9 +190,9 @@ echo '你的外网IP是: '$publicip
 # -------------------------------------------------------------------
 
 alias dns="dscacheutil -flushcache"
-alias gfw="cd $HOME/fuckgfw/GFWconfig && oo && sslocal -c /ocean/config.json " #shadowsocks翻墙
+alias gfw="cd $HOME/Dropbox/GFW" #shadowsocks翻墙
 alias oo='open .' # open current directory in OS X Finder
-
+alias st='sublime' #open with sublime # ln -s "/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" /usr/local/bin/sublime
 
 # -------------------------------------------------------------------
 # Android
@@ -260,3 +262,4 @@ export PATH=/usr/bin:$PATH
 
 
 
+export PATH="/usr/local/bin:$PATH"

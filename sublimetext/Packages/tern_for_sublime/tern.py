@@ -2,6 +2,11 @@
 
 import sublime, sublime_plugin
 import os, sys, platform, subprocess, webbrowser, json, re, time, atexit
+try:
+  # python 2
+  from utils.renderer import create_arghints_renderer
+except:
+  from .utils.renderer import create_arghints_renderer
 
 windows = platform.system() == "Windows"
 python3 = sys.version_info[0] > 2
@@ -12,6 +17,8 @@ def is_js_file(view):
 
 files = {}
 arghints_enabled = False
+arghints_renderer = None
+arg_completion_enabled = False
 tern_command = None
 tern_arguments = []
 
@@ -232,12 +239,14 @@ class Req_Error(Exception):
   def __str__(self):
     return self.message
 
+localhost = (windows and "127.0.0.1") or "localhost"
+
 def make_request_py2():
   import urllib2
   opener = urllib2.build_opener(urllib2.ProxyHandler({}))
   def f(port, doc):
     try:
-      req = opener.open("http://localhost:" + str(port) + "/", json.dumps(doc), 1)
+      req = opener.open("http://" + localhost + ":" + str(port) + "/", json.dumps(doc), 1)
       return json.loads(req.read())
     except urllib2.HTTPError as error:
       raise Req_Error(error.read())
@@ -248,7 +257,7 @@ def make_request_py3():
   opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
   def f(port, doc):
     try:
-      req = opener.open("http://localhost:" + str(port) + "/", json.dumps(doc).encode("utf-8"), 1)
+      req = opener.open("http://" + localhost + ":" + str(port) + "/", json.dumps(doc).encode("utf-8"), 1)
       return json.loads(req.read().decode("utf-8"))
     except urllib.error.URLError as error:
       raise Req_Error(error.read().decode("utf-8"))
@@ -262,7 +271,7 @@ else:
 def view_js_text(view):
   text, pos = ("", 0)
   for region in view.find_by_selector("source.js"):
-    if region.a > pos: text += ";" + " " * (region.a - pos - 1)
+    if region.a > pos: text += ";" + re.sub(r'[^\n]', " ", view.substr(sublime.Region(pos + 1, region.a)))
     text += view.substr(region)
     pos = region.b
   return text
@@ -344,6 +353,45 @@ def completion_icon(type):
   if type == "bool": return " (bool)"
   return " (obj)"
 
+def fn_completion_icon(arguments):
+  return " (fn/"+str(len(arguments))+")"
+
+# create auto complete string from list arguments
+def create_arg_str(arguments):
+  arg_str = ""
+  k = 1
+  for argument in arguments:
+    arg_str += "${" + str(k) + ":" + argument + "}, "
+    k += 1
+  return arg_str[0:-2]
+
+# parse the type to get the arguments
+def get_arguments(type):
+  type = type[3:type.find(')')] + ",'"
+  arg_list = []
+  arg_start = 0
+  arg_end = 0
+  depth = 0
+  arg_already = False
+  for ch in type:
+    if depth == 0 and ch == ',':
+      if arg_already:
+        arg_already = False
+      elif arg_start != arg_end:
+        arg_list.append(type[arg_start:arg_end])
+      arg_start = arg_end+1
+    elif depth == 0 and ch == ':':
+      arg_already = True
+      arg_list.append(type[arg_start:arg_end])
+    elif ch == '{' or ch == '(' or ch == '[':
+      depth += 1
+    elif ch == '}' or ch == ')' or ch == ']':
+      depth -= 1
+    elif ch == ' ':
+      arg_start = arg_end + 1
+    arg_end += 1
+  return arg_list
+
 def ensure_completions_cached(pfile, view):
   pos = view.sel()[0].b
   if pfile.cached_completions is not None:
@@ -357,9 +405,27 @@ def ensure_completions_cached(pfile, view):
   if data is None: return (None, False)
 
   completions = []
+  completions_arity = []
   for rec in data["completions"]:
     rec_name = rec.get('name').replace('$', '\\$')
-    completions.append((rec.get("name") + completion_icon(rec.get("type", None)), rec_name))
+    rec_type = rec.get("type", None)
+    if arg_completion_enabled:
+      if completion_icon(rec_type) == " (fn)":
+        arguments = get_arguments(rec_type)
+        fn_name = rec_name + "(" + create_arg_str(arguments) + ")"
+        completions.append((rec.get("name") + fn_completion_icon(arguments), fn_name))
+
+        for i in range(len(arguments) - 1, -1, -1):
+          fn_name = rec_name + "(" + create_arg_str(arguments[0:i]) + ")"
+          completions_arity.append((rec.get("name") + fn_completion_icon(arguments[0:i]), fn_name))
+      else:
+        completions.append((rec.get("name") + completion_icon(rec_type), rec_name))
+    else:
+      completions.append((rec_name + completion_icon(rec_type), rec_name))
+
+  # put the auto completions of functions with lower arity at the bottom of the autocomplete list
+  # so they don't clog up the autocompeltions at the top of the list
+  completions = completions + completions_arity
   pfile.cached_completions = (data["start"], view.substr(sublime.Region(data["start"], pos)), completions)
   return (completions, True)
 
@@ -384,34 +450,24 @@ def locate_call(view):
 
 def show_argument_hints(pfile, view):
   call_start, argpos = locate_call(view)
-  if call_start is None: return render_argument_hints(pfile, None, 0)
+  if call_start is None: return render_argument_hints(pfile, view, None, 0)
   if pfile.cached_arguments is not None and pfile.cached_arguments[0] == call_start:
-    return render_argument_hints(pfile, pfile.cached_arguments[1], argpos)
+    return render_argument_hints(pfile, view, pfile.cached_arguments[1], argpos)
 
   data = run_command(view, {"type": "type", "preferFunction": True}, call_start, silent=True)
-  parsed = data and parse_function_type(data)
-  pfile.cached_arguments = (call_start, parsed)
-  render_argument_hints(pfile, parsed, argpos)
+  if data is not None:
+    parsed = parse_function_type(data)
+    if parsed is not None:
+      parsed['url'] = data.get('url', None)
+      parsed['doc'] = data.get('doc', None)
+      pfile.cached_arguments = (call_start, parsed)
+      render_argument_hints(pfile, view, parsed, argpos)
 
-def render_argument_hints(pfile, ftype, argpos):
+def render_argument_hints(pfile, view, ftype, argpos):
   if ftype is None:
-    if pfile.showing_arguments:
-      sublime.status_message("")
-      pfile.showing_arguments = False
-    return
-
-  msg = ftype["name"] + "("
-  i = 0
-  for name, type in ftype["args"]:
-    if i > 0: msg += ", "
-    if i == argpos: msg += "*"
-    msg += name + ("" if type == "?" else ": " + type)
-    i += 1
-  msg += ")"
-  if ftype["retval"] is not None:
-    msg += " -> " + ftype["retval"]
-  sublime.status_message(msg)
-  pfile.showing_arguments = True
+    arghints_renderer.clean(pfile, view)
+  else:
+    arghints_renderer.render(pfile, view, ftype, argpos)
 
 def parse_function_type(data):
   type = data["type"]
@@ -446,6 +502,10 @@ def parse_function_type(data):
           "retval": retval}
 
 jump_stack = []
+
+class TernArghintCommand(sublime_plugin.TextCommand):
+  def run(self, edit, **args):
+    self.view.insert(edit, 0, args.get('msg', ''))
 
 class TernJumpToDef(sublime_plugin.TextCommand):
   def run(self, edit, **args):
@@ -493,10 +553,21 @@ class TernSelectVariable(sublime_plugin.TextCommand):
 plugin_dir = os.path.abspath(os.path.dirname(__file__))
 
 def plugin_loaded():
-  global arghints_enabled, tern_command, tern_arguments
+  global arghints_enabled, arghints_renderer, tern_command, tern_arguments
+  global arg_completion_enabled
   settings = sublime.load_settings("Preferences.sublime-settings")
   arghints_enabled = settings.get("tern_argument_hints", False)
+  arg_completion_enabled = settings.get("tern_argument_completion", False)
+  if arghints_enabled:
+    if "show_popup" in dir(sublime.View):
+      default_arghints_type = "tooltip"
+    else:
+      default_arghints_type = "status"
+    arghints_type = settings.get("tern_argument_hints_type", default_arghints_type)
+    arghints_renderer = create_arghints_renderer(arghints_type)
   tern_arguments = settings.get("tern_arguments", [])
+  if not isinstance(tern_arguments, list):
+    tern_arguments = [tern_arguments]
   tern_command = settings.get("tern_command", None)
   if tern_command is None:
     if not os.path.isdir(os.path.join(plugin_dir, "node_modules/tern")):
@@ -521,7 +592,7 @@ def plugin_loaded():
 def cleanup():
   for f in files.values():
     kill_server(f.project)
-  
+
 atexit.register(cleanup)
 
 if is_st2:

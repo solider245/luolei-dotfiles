@@ -64,8 +64,13 @@ class EncodingCache(object):
 		if not os.path.exists(self.file):
 			return
 		fp = open(self.file, 'r')
-		self.cache = json.load(fp)
-		fp.close()
+		try:
+			self.cache = json.load(fp)
+		except ValueError:
+			# the cache file is corrupted
+			return
+		finally:
+			fp.close()
 		if len(self.cache) > 0:
 			if 'file' in self.cache[0]:
 				# old style cache
@@ -83,6 +88,12 @@ class EncodingCache(object):
 		json.dump(self.cache, fp)
 		fp.close()
 		self.dirty = False
+
+	def get(self, file_name):
+		for item in self.cache:
+			if file_name in item:
+				return item.get(file_name)
+		return None
 
 	def pop(self, file_name):
 		for item in self.cache:
@@ -103,6 +114,15 @@ class EncodingCache(object):
 
 encoding_cache = None
 
+OPT_MAP = {
+	'convert_and_open': True,
+	'no_action': False,
+	'always': True,
+	'never': False,
+	True: True,
+	False: False
+}
+
 def get_settings():
 	global ENCODINGS_NAME, ENCODINGS_CODE
 	settings = sublime.load_settings('ConvertToUTF8.sublime-settings')
@@ -111,11 +131,12 @@ def get_settings():
 	ENCODINGS_CODE = [pair[1] for pair in encoding_list]
 	encoding_cache.set_max_size(settings.get('max_cache_size', 100))
 	SETTINGS['max_detect_lines'] = settings.get('max_detect_lines', 600)
-	SETTINGS['preview_action'] = settings.get('preview_action', 'no_action')
+	SETTINGS['preview_action'] = OPT_MAP.get(settings.get('preview_action', False))
 	SETTINGS['default_encoding_on_create'] = settings.get('default_encoding_on_create', '')
-	SETTINGS['convert_on_load'] = settings.get('convert_on_load', 'always')
-	SETTINGS['convert_on_save'] = settings.get('convert_on_save', 'always')
+	SETTINGS['convert_on_load'] = OPT_MAP.get(settings.get('convert_on_load', True))
+	SETTINGS['convert_on_save'] = OPT_MAP.get(settings.get('convert_on_save', True))
 	SETTINGS['lazy_reload'] = settings.get('lazy_reload', True)
+	SETTINGS['convert_on_find'] = settings.get('convert_on_find', False)
 
 def get_setting(view, key):
 	# read project specific settings first
@@ -165,7 +186,7 @@ def setup_views():
 	# check existing views
 	for win in sublime.windows():
 		for view in win.views():
-			if get_setting(view, 'convert_on_load') == 'never':
+			if not get_setting(view, 'convert_on_load'):
 				break
 			if view.is_dirty() or view.settings().get('origin_encoding'):
 				show_encoding_status(view)
@@ -189,7 +210,7 @@ if not ST3:
 	wait_for_ready()
 
 def detect(view, file_name, cnt):
-	if not file_name or not os.path.exists(file_name):
+	if not file_name or not os.path.exists(file_name) or os.path.getsize(file_name) == 0:
 		return
 	encoding = encoding_cache.pop(file_name)
 	if encoding:
@@ -338,20 +359,25 @@ class PyInstructionCommand(sublime_plugin.TextCommand):
 			'osx-x64': 'osx',
 		}][ST3].get(platform + '-' + arch)
 
-	def run(self, edit, encoding, file_name):
+	def run(self, edit, encoding, file_name, need_codecs):
 		self.view.set_name('ConvertToUTF8 Instructions')
 		self.view.set_scratch(True)
 		self.view.settings().set("word_wrap", True)
-		msg = 'Oops! The file {0} is detected as {1} which is not supported by your Sublime Text.\n\nPlease check whether it is in the list of Python\'s Standard Encodings (http://docs.python.org/library/codecs.html#standard-encodings) or not.\n\nIf yes, '.format(file_name, encoding)
-		branch = self.get_branch(sublime.platform(), sublime.arch())
-		if branch:
-			ver = '33' if ST3 else '26'
-			msg = msg + 'please install Codecs{0} (https://github.com/seanliang/Codecs{0}/tree/{1}) and restart Sublime Text to make ConvertToUTF8 work properly. If it is still not working, '.format(ver, branch)
+		msg = 'File: {0}\nEncoding: {1}\nError: '.format(file_name, encoding)
+		if need_codecs:
+			msg = msg + 'Codecs missing\n\n'
+			branch = self.get_branch(sublime.platform(), sublime.arch())
+			if branch:
+				ver = '33' if ST3 else '26'
+				msg = msg + 'Please install Codecs{0} plugin (https://github.com/seanliang/Codecs{0}/tree/{1}).\n'.format(ver, branch)
+			else:
+				import platform
+				msg = msg + 'Please send the following information to sunlxy (at) yahoo.com:\n====== Debug Information ======\nVersion: {0}-{1}\nPlatform: {2}\nPath: {3}\nEncoding: {4}\n'.format(
+					sublime.version(), sublime.arch(), platform.platform(), sys.path, encoding
+				)
+		else:
+			msg = msg + 'Unsupported encoding, see http://docs.python.org/library/codecs.html#standard-encodings\n\nPlease try other tools such as iconv.\n'
 
-		import platform
-		msg = msg + 'please kindly send the following information to sunlxy (at) yahoo.com:\n====== Debug Information ======\nVersion: {0}-{1}\nPlatform: {2}\nPath: {3}\nEncoding: {4}\n'.format(
-			sublime.version(), sublime.arch(), platform.platform(), sys.path, encoding
-		)
 		self.view.insert(edit, 0, msg)
 		self.view.set_read_only(True)
 		self.view.window().focus_view(self.view)
@@ -384,8 +410,17 @@ class ConvertToUtf8Command(sublime_plugin.TextCommand):
 			fp = codecs.open(file_name, 'rb', encoding, errors='strict')
 			contents = fp.read()
 		except LookupError as e:
-			clean_encoding_vars(view)
-			view.window().new_file().run_command('py_instruction', {'encoding': encoding, 'file_name': file_name})
+			try:
+				# reload codecs
+				import _multibytecodec, imp, encodings
+				imp.reload(encodings)
+				imp.reload(codecs)
+				codecs.getencoder(encoding)
+				view.run_command('reload_with_encoding', {'encoding': encoding})
+			except (ImportError, LookupError) as e:
+				need_codecs = (type(e) == ImportError)
+				clean_encoding_vars(view)
+				view.window().new_file().run_command('py_instruction', {'encoding': encoding, 'file_name': file_name, 'need_codecs': need_codecs})
 			return
 		except UnicodeDecodeError as e:
 			if detect_on_fail:
@@ -421,12 +456,12 @@ class ConvertToUtf8Command(sublime_plugin.TextCommand):
 		sel = view.sel()
 		rs = [x for x in sel]
 		vp = view.viewport_position()
-		view.set_viewport_position(tuple([0, 0]))
+		view.set_viewport_position((0, 0), False)
 		view.replace(edit, regions, contents)
 		sel.clear()
 		for x in rs:
 			sel.add(sublime.Region(x.a, x.b))
-		view.set_viewport_position(vp)
+		view.set_viewport_position(vp, False)
 		stamps[file_name] = stamp
 		sublime.status_message('{0} -> UTF8'.format(encoding))
 
@@ -449,6 +484,12 @@ class ConvertFromUtf8Command(sublime_plugin.TextCommand):
 		if not encoding or encoding == 'UTF-8':
 			encoding_cache.pop(file_name)
 			return
+		# remember current folded regions
+		regions = [[x.a, x.b] for x in view.folded_regions()]
+		if regions:
+			view.settings().set('folded_regions', regions)
+		vp = view.viewport_position()
+		view.settings().set('viewport_position', [vp[0], vp[1]])
 		fp = None
 		try:
 			fp = open(file_name, 'rb')
@@ -467,6 +508,7 @@ class ConvertFromUtf8Command(sublime_plugin.TextCommand):
 		fp.close()
 		if not get_setting(view, 'lazy_reload'):
 			# os.rename has "Invalid cross-device link" issue
+			os.chmod(tmp_name, os.stat(file_name)[0])
 			shutil.move(tmp_name, file_name)
 		else:
 			# copy the timestamp from original file
@@ -482,7 +524,69 @@ class ConvertFromUtf8Command(sublime_plugin.TextCommand):
 			return
 		return 'UTF8 -> {0}'.format(encoding)
 
+class ConvertTextToUtf8Command(sublime_plugin.TextCommand):
+	def get_text(self, region):
+		content = self.view.substr(region)
+		try:
+			return content.encode('CP1252')
+		except Exception:
+			return None
+
+	def detect(self, begin_line, end_line):
+		begin_line = int(begin_line)
+		end_line = int(end_line)
+		begin_point = self.view.text_point(begin_line + 1, 0)
+		end_point = self.view.text_point(end_line, 0) - 1
+		region = sublime.Region(begin_point, end_point)
+		content = self.get_text(region)
+		if not content:
+			return
+		detector = UniversalDetector()
+		detector.feed(content)
+		detector.close()
+		encoding = detector.result['encoding']
+		confidence = detector.result['confidence']
+		encoding = encoding.upper()
+		if confidence < 0.95 or encoding in SKIP_ENCODINGS:
+			return
+		self.view.run_command('convert_text_to_utf8', {'begin_line': begin_line, 'end_line': end_line, 'encoding': encoding})
+
+	def run(self, edit, begin_line, end_line, encoding = None):
+		begin_line = int(begin_line)
+		end_line = int(end_line)
+		if not encoding:
+			# detect the encoding
+			sublime.set_timeout(lambda: self.detect(begin_line, end_line), 0)
+			return
+		view = self.view
+		last_line = begin_line + 50
+		if last_line > end_line:
+			last_line = end_line
+		begin_point = view.text_point(begin_line + 1, 0)
+		end_point = view.text_point(last_line, 0) - 1
+		region = sublime.Region(begin_point, end_point)
+		text = self.get_text(region)
+		while True:
+			if encoding:
+				try:
+					text = text.decode(encoding)
+				except UnicodeDecodeError:
+					encoding = SUPERSETS.get(encoding)
+					continue
+				break
+			else:
+				return
+		view.replace(edit, region, text)
+		if last_line < end_line:
+			view.run_command('convert_text_to_utf8', {'begin_line': last_line, 'end_line': end_line, 'encoding': encoding})
+
+	def is_enabled(self):
+		return get_setting(self.view, 'convert_on_find')
+
 class ConvertToUTF8Listener(sublime_plugin.EventListener):
+	def is_find_results(self, view):
+		return view.settings().get('syntax') == 'Packages/Default/Find Results.hidden-tmLanguage'
+
 	def check_clones(self, view):
 		clone_numbers = view.settings().get('clone_numbers', 0)
 		if clone_numbers:
@@ -494,6 +598,9 @@ class ConvertToUTF8Listener(sublime_plugin.EventListener):
 		return False
 
 	def on_new(self, view):
+		if self.is_find_results(view):
+			view.settings().set('last_lines', 0)
+			return
 		if get_setting(view, 'default_encoding_on_create'):
 			init_encoding_vars(view, get_setting(view, 'default_encoding_on_create'), False)
 
@@ -510,11 +617,18 @@ class ConvertToUTF8Listener(sublime_plugin.EventListener):
 			view.settings().set('clone_numbers', clone_numbers - 1)
 		else:
 			remove_reverting(view.file_name())
+			if self.is_find_results(view):
+				view.settings().erase('last_lines')
 
 	def on_load(self, view):
 		encoding = view.encoding()
 		if encoding == 'Hexadecimal' or encoding.endswith(' BOM'):
 			return
+		
+		#if sublime text already load right, no need to check the file's encoding
+		if encoding not in ('Undefined', view.settings().get('fallback_encoding')):
+			return
+		
 		file_name = view.file_name()
 		if not file_name:
 			return
@@ -535,7 +649,7 @@ class ConvertToUTF8Listener(sublime_plugin.EventListener):
 					return
 			else:
 				return
-		if get_setting(view, 'convert_on_load') == 'never':
+		if not get_setting(view, 'convert_on_load'):
 			return
 		self.perform_action(view, file_name, 5)
 
@@ -562,7 +676,7 @@ class ConvertToUTF8Listener(sublime_plugin.EventListener):
 		threading.Thread(target=lambda: detect(view, file_name, cnt)).start()
 
 	def perform_action(self, view, file_name, times):
-		if get_setting(view, 'preview_action') != 'convert_and_open' and self.is_preview(view):
+		if not get_setting(view, 'preview_action') and self.is_preview(view):
 			if times > 0:
 				# give it another chance before everything is ready
 				sublime.set_timeout(lambda: self.perform_action(view, file_name, times - 1), 100)
@@ -579,6 +693,24 @@ class ConvertToUTF8Listener(sublime_plugin.EventListener):
 			return
 		file_name = view.file_name()
 		if not file_name or view.is_loading():
+			if get_setting(view, 'convert_on_find') and self.is_find_results(view):
+				begin_line = view.settings().get('last_lines', 0)
+				end_line = view.rowcol(view.size())[0]
+				if end_line > begin_line:
+					view.settings().set('last_lines', end_line)
+					begin_point = view.text_point(begin_line, 0)
+					line = view.line(begin_point)
+					text = view.substr(line)
+					if text.endswith(':'):
+						# find the file name
+						file_name = text[:-1]
+						# skip opened file
+						if view.window().find_open_file(file_name):
+							return
+						encoding = encoding_cache.get(file_name)
+						if encoding in SKIP_ENCODINGS:
+							return
+						sublime.set_timeout(lambda: view.run_command('convert_text_to_utf8', {'begin_line': begin_line, 'end_line': end_line, 'encoding': encoding}), 0)
 			return
 		if not view.settings().get('in_converting'):
 			if view.settings().get('is_preview'):
@@ -615,6 +747,16 @@ class ConvertToUTF8Listener(sublime_plugin.EventListener):
 	def undo_me(self, view):
 		view.settings().erase('prevent_detect')
 		view.run_command('undo')
+		# restore folded regions
+		regions = view.settings().get('folded_regions')
+		if regions:
+			view.settings().erase('folded_regions')
+			folded = [sublime.Region(int(region[0]), int(region[1])) for region in regions]
+			view.fold(folded)
+		vp = view.settings().get('viewport_position')
+		if vp:
+			view.settings().erase('viewport_position')
+			view.set_viewport_position((vp[0], vp[1]), False)
 		# st3 will reload file immediately
 		if view.settings().get('revert_to_scratch') or (ST3 and not get_setting(view, 'lazy_reload')):
 			view.set_scratch(True)
@@ -625,6 +767,7 @@ class ConvertToUTF8Listener(sublime_plugin.EventListener):
 			file_name = view.file_name()
 			if get_setting(view, 'lazy_reload'):
 				tmp_name = os.path.join(TMP_DIR, get_temp_name(file_name))
+				os.chmod(tmp_name, os.stat(file_name)[0])
 				shutil.move(tmp_name, file_name)
 			remove_reverting(file_name)
 			view.settings().set('revert_to_scratch', not view.is_dirty())
@@ -655,7 +798,7 @@ class ConvertToUTF8Listener(sublime_plugin.EventListener):
 		file_name = view.file_name()
 		if file_name in stamps:
 			del stamps[file_name]
-		if get_setting(view, 'convert_on_save') == 'never':
+		if not get_setting(view, 'convert_on_save'):
 			return
 		# file was saved with other encoding
 		if view_encoding != 'UTF-8':
