@@ -8,7 +8,7 @@ This is a [Sublime Text][st] (version 2 and 3) package that provides
 
 In JavaScript files, the package will handle autocompletion.
 
-The following keys will be found (in JavaScript files):
+The following keys will be bound (in JavaScript files):
 
 `alt+.`  
 Jump to the definition of the thing that the cursor is pointing at. If
@@ -40,11 +40,15 @@ a JavaScript program), and install the depedencies of the package.
     cd tern_for_sublime
     npm install
 
+On OS X, you might also need to install the [Fix Mac
+Path](https://github.com/int3h/SublimeFixMacPath) Sublime plugin to
+help ST actually find your node binary.
+
 You should be all set now.
 
 ## Configuration
 
-The plugin will load its settings from `Preferences.sublime-settings`,
+The plugin will load its settings from `Tern.sublime-settings` (found in Preferences > Package Settings > Tern),
 and recognized the following settings:
 
 `tern_argument_hints` (boolean, defaults to false)  
@@ -99,12 +103,3 @@ Example:
 ```
 
 Ensure that your `auto_complete` preference is set to `true`. It's enabled by default.
-
-## Alternative package
-
-There exists also [Sublime Tern][stern], a package with similar goals
-(Tern integration for ST). It exposes a slightly different set of
-functionality, and uses the PyV8 bridge, rather than node.js, to run
-the Tern server.
-
-[stern]: https://github.com/emmetio/sublime-tern
