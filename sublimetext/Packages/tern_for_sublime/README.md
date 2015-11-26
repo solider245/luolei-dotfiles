@@ -23,13 +23,16 @@ Jump back to where you were when executing the previous `alt+.` command.
 When on a variable, select all references to that variable in the
 current file.
 
+`alt+o`  
+Show quick documentation for the thing that the cursor is pointing at. Documentation includes the type, a description (if available), and documentation url (if available).
+
 ## Installation
 
 Check out the code in this repository into a subdirectory of your
 Sublime Text's `Packages` directory.
 
     cd /path/to/sublime-text-N/Packages
-    git clone git://github.com/marijnh/tern_for_sublime.git
+    git clone git://github.com/ternjs/tern_for_sublime.git
 
 Next, make sure [node.js][node] and [npm][npm] are installed (Tern is
 a JavaScript program), and install the depedencies of the package.
@@ -54,13 +57,10 @@ and recognized the following settings:
 `tern_argument_hints` (boolean, defaults to false)  
 Whether to show argument hints (May impact responsiveness on slow machines or big projects).
 
-`tern_argument_hints_type` (status, panel, tooltip, defaults to tooltip when available, otherwise status)  
-__status__ - When status is enabled, the status bar will list
-the arguments for the function call that the cursor is inside.
-Unfortunately, the status bar is tiny and Sublime Text 2 provides no saner way to show these hints.  
-__panel__ - When panel is enabled, a new panel window opens and will list
-the arguments for the function call that the cursor is inside.  
-__tooltip__ - (only available on SublimeText build 3070+) When tooltip is enabled, a tooltip opens and will list the arguments for the function call that the cursor is inside, as well as, a clickable URL (if available) to the docs and a snippet of documentation (if available).
+`tern_output_style` (status, panel, tooltip, defaults to tooltip when available, otherwise status)  
+__status__ - When status is enabled, the status bar be used to display argument hints for the function call that the cursor is inside, and documentation. Unfortunately, the status bar is tiny and Sublime Text 2 provides no saner way to show these hints.  
+__panel__ - When panel is enabled, a new panel window opens to show arguments and documentation.  
+__tooltip__ - (only available on SublimeText build 3070+) When tooltip is enabled, a tooltip below the cursor is used.
 
 `tern_argument_completion` (boolean, default to false)  
 Auto complete function arguments (similar to eclipse).  
@@ -93,13 +93,17 @@ plugins for a project. See the [Tern docs][docs] for details.
 ### Automatically Showing Completions
 
 Add `{"selector": "source.js", "characters": "."}` to your
-`auto_complete_triggers` array in the Sublime Text preferences to
+`auto_complete_triggers` array in the Sublime Text preferences (found in Sublime Text > Preferences > Settings - User) to
 automatically show completions after a dot is typed following an
-object name.
+object name. 
 
 Example:
 ```javascript
 "auto_complete_triggers": [ {"selector": "text.html", "characters": "<"}, {"selector": "source.js", "characters": "."} ]
 ```
+
+If you don't have already an item named `auto_complete_triggers`, just add it after the last one (after adding a comma) like so:
+
+![](http://i.imgur.com/pptihb7.png)
 
 Ensure that your `auto_complete` preference is set to `true`. It's enabled by default.

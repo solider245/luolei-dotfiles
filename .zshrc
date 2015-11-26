@@ -44,7 +44,7 @@ alias ld="ls -lih"
 alias map='traceroute' #路由跟踪
 alias tgz='tar -czf' #tar -czf [文件名] [被压缩文件] gzip压缩
 alias ugz='tar -xzf' #tar -xzf [被压缩文件]
-alias pwd='pwd && pwd' #查看当前路径
+#alias pwd='pwd && pwd' #查看当前路径
 alias pwdc='pwd && pwd | pbcopy' #查看当前路径并且复制
 
 #
@@ -166,7 +166,7 @@ echo '你的服务器地址是:' $lanip
 python -m SimpleHTTPServer $1
 }
 function nodeweb {
-echo '启动Node Http Server' 
+echo '启动Node Http Server'
  http-server
 }
 

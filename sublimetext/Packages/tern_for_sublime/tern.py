@@ -4,9 +4,9 @@ import sublime, sublime_plugin
 import os, sys, platform, subprocess, webbrowser, json, re, time, atexit
 try:
   # python 2
-  from utils.renderer import create_arghints_renderer
+  from utils.renderer import create_renderer
 except:
-  from .utils.renderer import create_arghints_renderer
+  from .utils.renderer import create_renderer
 
 windows = platform.system() == "Windows"
 python3 = sys.version_info[0] > 2
@@ -17,7 +17,7 @@ def is_js_file(view):
 
 files = {}
 arghints_enabled = False
-arghints_renderer = None
+renderer = None
 arg_completion_enabled = False
 tern_command = None
 tern_arguments = []
@@ -277,6 +277,11 @@ def view_js_text(view):
   return text
 
 def run_command(view, query, pos=None, fragments=True, silent=False):
+  """Run the query on the Tern server.
+
+  See default queries at http://ternjs.net/doc/manual.html#protocol.
+  """
+
   pfile = get_pfile(view)
   if pfile is None or pfile.project.disabled: return
 
@@ -358,10 +363,12 @@ def fn_completion_icon(arguments):
 
 # create auto complete string from list arguments
 def create_arg_str(arguments):
+  if len(arguments) ==  0:
+    return "${1}"
   arg_str = ""
   k = 1
   for argument in arguments:
-    arg_str += "${" + str(k) + ":" + argument + "}, "
+    arg_str += "${" + str(k) + ":" + argument.replace("$", "\$") + "}, "
     k += 1
   return arg_str[0:-2]
 
@@ -371,6 +378,7 @@ def get_arguments(type):
   arg_list = []
   arg_start = 0
   arg_end = 0
+  # this two variables are used to skip ': {...}' in signature like 'a: {...}'
   depth = 0
   arg_already = False
   for ch in type:
@@ -401,7 +409,7 @@ def ensure_completions_cached(pfile, view):
       if slice.startswith(c_word) and not re.match(".*\\W", slice):
         return (c_completions, False)
 
-  data = run_command(view, {"type": "completions", "types": True})
+  data = run_command(view, {"type": "completions", "types": True, "includeKeywords": True})
   if data is None: return (None, False)
 
   completions = []
@@ -409,8 +417,8 @@ def ensure_completions_cached(pfile, view):
   for rec in data["completions"]:
     rec_name = rec.get('name').replace('$', '\\$')
     rec_type = rec.get("type", None)
-    if arg_completion_enabled:
-      if completion_icon(rec_type) == " (fn)":
+    if completion_icon(rec_type) == " (fn)":
+      if arg_completion_enabled:
         arguments = get_arguments(rec_type)
         fn_name = rec_name + "(" + create_arg_str(arguments) + ")"
         completions.append((rec.get("name") + fn_completion_icon(arguments), fn_name))
@@ -419,9 +427,9 @@ def ensure_completions_cached(pfile, view):
           fn_name = rec_name + "(" + create_arg_str(arguments[0:i]) + ")"
           completions_arity.append((rec.get("name") + fn_completion_icon(arguments[0:i]), fn_name))
       else:
-        completions.append((rec.get("name") + completion_icon(rec_type), rec_name))
+        completions.append((rec.get("name") + completion_icon(rec_type), rec_name + "(${1})"))
     else:
-      completions.append((rec_name + completion_icon(rec_type), rec_name))
+      completions.append((rec.get("name") + completion_icon(rec_type), rec_name))
 
   # put the auto completions of functions with lower arity at the bottom of the autocomplete list
   # so they don't clog up the autocompeltions at the top of the list
@@ -465,9 +473,9 @@ def show_argument_hints(pfile, view):
 
 def render_argument_hints(pfile, view, ftype, argpos):
   if ftype is None:
-    arghints_renderer.clean(pfile, view)
+    renderer.clean(pfile, view)
   else:
-    arghints_renderer.render(pfile, view, ftype, argpos)
+    renderer.render_arghints(pfile, view, ftype, argpos)
 
 def parse_function_type(data):
   type = data["type"]
@@ -550,6 +558,17 @@ class TernSelectVariable(sublime_plugin.TextCommand):
     self.view.sel().clear()
     for r in regions: self.view.sel().add(r)
 
+
+class TernDescribe(sublime_plugin.TextCommand):
+  def run(self, edit, **args):
+    data = run_command(self.view, {"type": "documentation"})
+    if data is None:
+      return
+    renderer.render_description(get_pfile(self.view), self.view,
+                                data["type"], data.get("doc", None),
+                                data.get("url", None))
+
+
 # fetch a certain setting from the package settings file and if it doesn't exist check the
 # Preferences.sublime-settings file for backwards compatibility.
 def get_setting(key, default):
@@ -565,17 +584,17 @@ def get_setting(key, default):
 plugin_dir = os.path.abspath(os.path.dirname(__file__))
 
 def plugin_loaded():
-  global arghints_enabled, arghints_renderer, tern_command, tern_arguments
+  global arghints_enabled, renderer, tern_command, tern_arguments
   global arg_completion_enabled
   arghints_enabled = get_setting("tern_argument_hints", False)
   arg_completion_enabled = get_setting("tern_argument_completion", False)
-  if arghints_enabled:
-    if "show_popup" in dir(sublime.View):
-      default_arghints_type = "tooltip"
-    else:
-      default_arghints_type = "status"
-    arghints_type = get_setting("tern_argument_hints_type", default_arghints_type)
-    arghints_renderer = create_arghints_renderer(arghints_type)
+
+  if "show_popup" in dir(sublime.View):
+    default_output_style = "tooltip"
+  else:
+    default_output_style = "status"
+  output_style = get_setting("tern_output_style", get_setting("tern_argument_hints_type", default_output_style))
+  renderer = create_renderer(output_style)
   tern_arguments = get_setting("tern_arguments", [])
   if not isinstance(tern_arguments, list):
     tern_arguments = [tern_arguments]
@@ -592,7 +611,7 @@ def plugin_loaded():
             subprocess.check_output(["npm", "install"], cwd=plugin_dir)
           else:
             subprocess.check_call(["npm", "install"], cwd=plugin_dir)
-        except subprocess.CalledProcessError as e:
+        except (IOError, OSError) as e:
           msg = "Installation failed. Try doing 'npm install' manually in " + plugin_dir + "."
           if hasattr(e, "output"):
             msg += " Error message was:\n\n" + e.output

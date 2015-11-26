@@ -108,7 +108,7 @@
 	},
 
 	{ "keys": ["o"], "command": "enter_insert_mode", "args":
-		{"insert_command": "run_macro_file", "insert_args": {"file": "Packages/Default/Add Line.sublime-macro"} },
+		{"insert_command": "run_macro_file", "insert_args": {"file": "res://Packages/Default/Add Line.sublime-macro"} },
 		"context": [{"key": "setting.command_mode"}]
 	},
 	{ "keys": ["o"], "command": "vi_reverse_selections_direction",
@@ -120,7 +120,7 @@
 	},
 
 	{ "keys": ["O"], "command": "enter_insert_mode", "args":
-		{"insert_command": "run_macro_file", "insert_args": {"file": "Packages/Default/Add Line Before.sublime-macro"} },
+		{"insert_command": "run_macro_file", "insert_args": {"file": "res://Packages/Default/Add Line Before.sublime-macro"} },
 		"context": [{"key": "setting.command_mode"}]
 	},
 
@@ -609,12 +609,32 @@
 		"linewise": true },
 		"context": [{"key": "setting.command_mode"}]
 	},
+	{ "keys": ["j"], "command": "set_motion", "args": {
+		"motion": "move",
+		"motion_args": {"by": "stops", "line_begin": true, "forward": true, "extend": true },
+		"linewise": true },
+		"context":
+		[
+			{"key": "setting.command_mode"},
+			{"key": "vi_motion_mode", "operand": "line"}
+		]
+	},
 
 	{ "keys": ["k"], "command": "set_motion", "args": {
 		"motion": "move",
 		"motion_args": {"by": "lines", "forward": false, "extend": true },
 		"linewise": true },
 		"context": [{"key": "setting.command_mode"}]
+	},
+	{ "keys": ["k"], "command": "set_motion", "args": {
+		"motion": "move",
+		"motion_args": {"by": "stops", "line_begin": true, "forward": false, "extend": true },
+		"linewise": true },
+		"context":
+		[
+			{"key": "setting.command_mode"},
+			{"key": "vi_motion_mode", "operand": "line"}
+		]
 	},
 
 	{ "keys": ["G"], "command": "set_motion", "args": {
