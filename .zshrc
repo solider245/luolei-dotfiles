@@ -90,8 +90,7 @@ esac
  alias aliyun="ssh root@aliyun.is26.com"
  alias alihz="ssh root@hz.is26.com"
  alias aliluolei="ssh luolei@aliyun.is26.com"
- alias yiluolei="ssh luolei@42.96.192.25"
- alias yibbs="ssh luolei@115.28.227.114"
+ alias yuewen="ssh luolei@10.97.19.100"
 
  # -------------------------------------------------------------------
  # VPS 相关 Servers in air
