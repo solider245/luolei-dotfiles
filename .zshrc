@@ -88,7 +88,6 @@ esac
  alias jpluolei="ssh -p 1818 luolei@106.187.102.77"
  alias ocean="ssh -p 1717  luolei@192.241.199.155"
  alias aliyun="ssh root@aliyun.is26.com"
- alias alihz="ssh root@hz.is26.com"
  alias aliluolei="ssh luolei@aliyun.is26.com"
  alias yuewen="ssh luolei@10.97.19.100"
 
@@ -256,7 +255,7 @@ alias cnpm="npm --registry=http://r.cnpmjs.org \
 	--disturl=http://dist.cnpmjs.org \
 	--userconfig=$HOME/.cnpmrc"
 # For luolei
-
+alias pc='proxychains4'
 #Chinese Support 中文支持
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
@@ -270,3 +269,5 @@ export PATH=/usr/bin:$PATH
 [[ -s $(brew --prefix)/etc/profile.d/autojump.sh ]] && . $(brew --prefix)/etc/profile.d/autojump.sh
 
 export PATH="/usr/local/bin:$PATH"
+ export NODE_PATH=/usr/local/lib/node_modules
+source /usr/local/opt/nvm/nvm.sh

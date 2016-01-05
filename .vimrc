@@ -13,9 +13,9 @@ Plugin 'gmarik/vundle'
 Plugin 'scrooloose/syntastic'
 
 " 绑定键位
-nmap <C-a> <home> 
-nmap <C-e> <end>
-nmap <C-d> <Delet>
+" nmap <C-a> <home> 
+" nmap <C-e> <end>
+" nmap <C-d> <Delet>
 imap jj <Esc>  
 imap ;; <Esc>
 nmap XX :q<CR>	" 不保存退出
