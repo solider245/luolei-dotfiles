@@ -13,10 +13,10 @@ Plugin 'gmarik/vundle'
 Plugin 'scrooloose/syntastic'
 
 " 绑定键位
-" nmap <C-a> <home> 
+" nmap <C-a> <home>
 " nmap <C-e> <end>
 " nmap <C-d> <Delet>
-imap jj <Esc>  
+imap jj <Esc>
 imap ;; <Esc>
 nmap XX :q<CR>	" 不保存退出
 nmap XXX :q!<CR>	" 不保存退出
@@ -46,7 +46,7 @@ syntax on
 set ai
 set history=100
 set hlsearch		" 高亮搜索结果
-filetype plugin on 
+filetype plugin on
 set number "显示行数
 set cursorline
 set foldenable
