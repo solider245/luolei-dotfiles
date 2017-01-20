@@ -2,6 +2,7 @@
 
 import sublime, sublime_plugin
 import os, sys, platform, subprocess, webbrowser, json, re, time, atexit
+from subprocess import CalledProcessError
 try:
   # python 2
   from utils.renderer import create_renderer
@@ -13,7 +14,7 @@ python3 = sys.version_info[0] > 2
 is_st2 = int(sublime.version()) < 3000
 
 def is_js_file(view):
-  return view.score_selector(sel_end(view.sel()[0]), "source.js") > 0
+  return len(view.sel()) > 0 and view.score_selector(sel_end(view.sel()[0]), "source.js") > 0
 
 files = {}
 arghints_enabled = False
@@ -93,7 +94,8 @@ class Project(object):
 def get_pfile(view):
   if not is_js_file(view): return None
   fname = view.file_name()
-  if fname is None: return None
+  if fname is None:
+    fname = os.path.join(os.path.dirname(__file__), get_setting("tern_default_project_dir", "default_project_dir"), str(time.time()))
   if fname in files:
     pfile = files[fname]
     if pfile.project.disabled: return None
@@ -262,7 +264,10 @@ def make_request_py3():
       req = opener.open("http://" + localhost + ":" + str(port) + "/", json.dumps(doc).encode("utf-8"), 1)
       return json.loads(req.read().decode("utf-8"))
     except urllib.error.URLError as error:
-      raise Req_Error(error.read().decode("utf-8"))
+      if hasattr(error, "read"):
+        raise Req_Error(error.read().decode("utf-8"))
+      else:
+        raise error
   return f
 
 if python3:
@@ -352,16 +357,21 @@ def report_error(message, project):
     project.disabled = True
 
 def completion_icon(type):
-  if type is None or type == "?": return " (?)"
-  if type.startswith("fn("): return " (fn)"
-  if type.startswith("["): return " ([])"
-  if type == "number": return " (num)"
-  if type == "string": return " (str)"
-  if type == "bool": return " (bool)"
-  return " (obj)"
+  if type is None or type == "?": return "\t? "
+  if type.startswith("fn("): return "\tfn "
+  if type.startswith("["): return "\t[] "
+  if type == "number": return "\tnum "
+  if type == "string": return "\tstr "
+  if type == "bool": return "\tbool "
+  return "\t{} "
 
-def fn_completion_icon(arguments):
-  return " (fn/"+str(len(arguments))+")"
+def fn_completion_icon(arguments, retval):
+  # return " (fn/"+str(len(arguments))+")"
+  ret = ""
+  if retval is not None:
+    ret = retval
+
+  return "(" + ", ".join(arguments) + ")" + ret + ("\tfn ")
 
 # create auto complete string from list arguments
 def create_arg_str(arguments):
@@ -419,14 +429,22 @@ def ensure_completions_cached(pfile, view):
   for rec in data["completions"]:
     rec_name = rec.get('name').replace('$', '\\$')
     rec_type = rec.get("type", None)
-    if arg_completion_enabled and completion_icon(rec_type) == " (fn)":
+    if arg_completion_enabled and rec_type is not None and rec_type.startswith("fn("):
+      retval = parse_function_type(rec).get('retval')
+
+      if retval is None or retval == "()":
+        retval = ""
+      elif retval.startswith("{"):
+        retval = "{}"
+      elif retval.startswith("["):
+        retval = "[]"
+
+      if retval != "":
+        retval = " -> " + retval
+
       arguments = get_arguments(rec_type)
       fn_name = rec_name + "(" + create_arg_str(arguments) + ")"
-      completions.append((rec.get("name") + fn_completion_icon(arguments), fn_name))
-
-      for i in range(len(arguments) - 1, -1, -1):
-        fn_name = rec_name + "(" + create_arg_str(arguments[0:i]) + ")"
-        completions_arity.append((rec.get("name") + fn_completion_icon(arguments[0:i]), fn_name))
+      completions.append((rec.get("name") + fn_completion_icon(arguments, retval), fn_name))
     else:
       completions.append((rec.get("name") + completion_icon(rec_type), rec_name))
 
@@ -567,6 +585,15 @@ class TernDescribe(sublime_plugin.TextCommand):
                                 data["type"], data.get("doc", None),
                                 data.get("url", None))
 
+class TernDisableProject(sublime_plugin.TextCommand):
+  def run(self, edit, **args):
+    pfile = get_pfile(view)
+    pfile.project.disabled = False
+
+class TernEnableProject(sublime_plugin.TextCommand):
+  def run(self, edit, **args):
+    pfile = get_pfile(view)
+    pfile.project.disabled = True
 
 # fetch a certain setting from the package settings file and if it doesn't exist check the
 # Preferences.sublime-settings file for backwards compatibility.
@@ -607,13 +634,15 @@ def plugin_loaded():
           "Yes, install."):
         try:
           if hasattr(subprocess, "check_output"):
-            subprocess.check_output(["npm", "install"], cwd=plugin_dir)
+            subprocess.check_output(["npm", "--loglevel=silent", "install"], cwd=plugin_dir, shell=windows)
           else:
-            subprocess.check_call(["npm", "install"], cwd=plugin_dir)
-        except (IOError, OSError) as e:
+            subprocess.check_call(["npm", "--loglevel=silent", "install"], cwd=plugin_dir, shell=windows)
+        except (IOError, OSError, CalledProcessError) as e:
           msg = "Installation failed. Try doing 'npm install' manually in " + plugin_dir + "."
-          if hasattr(e, "output"):
-            msg += " Error message was:\n\n" + e.output
+          if hasattr(e, "output") and e.output is not None:
+            msg += "\nError message was:\n\n" + e.output
+          if hasattr(e, "returncode"):
+            msg += "\nReturn code was: " + str(e.returncode)
           sublime.error_message(msg)
           return
     tern_command = ["node",  os.path.join(plugin_dir, "node_modules/tern/bin/tern"), "--no-port-file"]
