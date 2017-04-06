@@ -36,7 +36,7 @@ alias godesk='cd ~/Desktop'
 # -------------------------------------------------------------------
 # Directory information 文件信息
 # -------------------------------------------------------------------
-alias ls="ls --color=auto"
+alias ls="ls -G"
 alias tree="ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'"
 alias dus="du -smh * | sort -nr" #根据文件大小排序
 alias lh='ls -d .*' # show hidden files/directories only #只显示隐藏文件
