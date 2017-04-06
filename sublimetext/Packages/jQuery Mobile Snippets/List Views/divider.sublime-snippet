@@ -1,8 +1,0 @@
-<snippet>
-	<content><![CDATA[
-<li data-role="list-divider">${1}</li>
-]]></content>
-	<tabTrigger>jqmdivider</tabTrigger>
-	<description>jQuery Mobile: Listview divider</description>
-	<scope>text.html</scope>
-</snippet>

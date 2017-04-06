@@ -1,6 +1,0 @@
-<snippet>
-	<content><![CDATA[localStorage.clear();]]></content>
-	<tabTrigger>cls</tabTrigger>
-	<description>JS - Clear localStorage</description>
-	<scope>source.js</scope>
-</snippet>
