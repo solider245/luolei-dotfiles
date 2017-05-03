@@ -85,6 +85,7 @@ esac
  # 服务器 Servers
  # -------------------------------------------------------------------
  #alias is26="ssh -p 1818 luolei@173.255.255.242"
+<<<<<<< HEAD
  alias jpluolei="ssh -p 64656 luolei@jp.is26.com"
  alias ocean="ssh -p 1717  luolei@192.241.199.155"
  alias aliyun="ssh root@aliyun.is26.com"
@@ -92,6 +93,15 @@ esac
  alias aliluolei="ssh luolei@aliyun.is26.com"
  alias alihz="ssh root@hz.is26.com"
  alias yiluolei="ssh luolei@42.96.192.25"
+=======
+ alias jpluolei="ssh -p 1818 luolei@106.187.102.77"
+ alias ocean="ssh -p 1717  luolei@192.241.199.155"
+ alias aliyun="ssh root@aliyun.is26.com"
+ alias alihz="ssh root@hz.is26.com"
+ alias aliluolei="ssh luolei@aliyun.is26.com"
+ alias yiluolei="ssh luolei@42.96.192.25"
+ alias yibbs="ssh luolei@115.28.227.114"
+>>>>>>> 088fed11733f729efbbe436081b0c8d0464bf75c
 
  # -------------------------------------------------------------------
  # VPS 相关 Servers in air
