@@ -46,7 +46,7 @@ alias tgz='tar -czf' #tar -czf [文件名] [被压缩文件] gzip压缩
 alias ugz='tar -xzf' #tar -xzf [被压缩文件]
 #alias pwd='pwd && pwd' #查看当前路径
 alias pwdc='pwd && pwd | pbcopy' #查看当前路径并且复制
-
+alias yuegate='sh /Users/yuewen-luolei/Yuewen/Dev/Yuegate/yuegate' #查看当前路径并且复制
 #
 alias cleanDS='find . -name ".DS_Store" -print0 | xargs -0 rm -rf' #清除目录下的 DS_Store文件
 
@@ -280,3 +280,4 @@ export PATH=$PATH:$HOME/Dropbox/Development/platform-tools/
 export PATH=/usr/bin:$PATH
   [[ -s $(brew --prefix)/etc/profile.d/autojump.sh ]] && . $(brew --prefix)/etc/profile.d/autojump.sh
 export PATH="/usr/local/bin:$PATH"
+alias yuegate='sh /Users/luolei/Dropbox/CODE/Yuegate/yuegate'
