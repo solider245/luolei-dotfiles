@@ -32,6 +32,7 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias godesk='cd ~/Desktop'
+alias mkjpg='mkdir JPG && mv *.JPG JPG/'
 
 # -------------------------------------------------------------------
 # Directory information 文件信息
@@ -86,13 +87,17 @@ esac
  # -------------------------------------------------------------------
  #alias is26="ssh -p 1818 luolei@173.255.255.242"
 
- alias jpluolei="ssh -p 64656 luolei@jp.is26.com"
  alias ocean="ssh -p 1717  luolei@192.241.199.155"
  alias aliyun="ssh root@aliyun.is26.com"
  alias taiwan="ssh root@tw.is26.com"
  alias aliluolei="ssh luolei@aliyun.is26.com"
+ alias aliluolei="ssh luolei@aliyun.is26.com"
  alias alihz="ssh root@hz.is26.com"
+ alias qcloud="ssh root@q.is26.com"
  alias yiluolei="ssh luolei@42.96.192.25"
+ alias tiaoban="ssh -p 8080 root@10.247.165.120"
+ alias haiwai="ssh -p 60022 luolei@115.159.217.38"
+ alias bdserver="ssh -p 51888 mgt@10.97.190.77"
 
 
  # -------------------------------------------------------------------
@@ -281,3 +286,8 @@ export PATH=/usr/bin:$PATH
   [[ -s $(brew --prefix)/etc/profile.d/autojump.sh ]] && . $(brew --prefix)/etc/profile.d/autojump.sh
 export PATH="/usr/local/bin:$PATH"
 alias yuegate='sh /Users/luolei/Dropbox/CODE/Yuegate/yuegate'
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+#alias yworkflow='sh /Users/luolei/DEV/Yworkflow/bin/yworkflow'
+export ANDROID_HOME=~/Library/Android/sdk
