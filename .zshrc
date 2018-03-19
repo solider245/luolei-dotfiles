@@ -47,7 +47,7 @@ alias tgz='tar -czf' #tar -czf [文件名] [被压缩文件] gzip压缩
 alias ugz='tar -xzf' #tar -xzf [被压缩文件]
 #alias pwd='pwd && pwd' #查看当前路径
 alias pwdc='pwd && pwd | pbcopy' #查看当前路径并且复制
-alias yuegate='sh /Users/yuewen-luolei/Yuewen/Dev/Yuegate/yuegate' #查看当前路径并且复制
+alias yuegate='sh /Users/yuewen-luolei/Dev/Yuegate/yuegate' #查看当前路径并且复制
 #
 alias cleanDS='find . -name ".DS_Store" -print0 | xargs -0 rm -rf' #清除目录下的 DS_Store文件
 
@@ -98,6 +98,18 @@ esac
  alias tiaoban="ssh -p 8080 root@10.247.165.120"
  alias haiwai="ssh -p 60022 luolei@115.159.217.38"
  alias bdserver="ssh -p 51888 mgt@10.97.190.77"
+ alias yuewenio="ssh root@111.231.15.21"
+
+
+ # -------------------------------------------------------------------
+ # VPS 相关 Servers in air
+ # -------------------------------------------------------------------
+
+ # -------------------------------------------------------------------
+ # 快速编辑常用文件 Quick Edit
+ # -------------------------------------------------------------------
+
+ ###快速编辑
 
 
  # -------------------------------------------------------------------
@@ -279,15 +291,17 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 #Android DEV 安卓Adb工具对应位置
-export PATH=$PATH:$HOME/Downloads/platform-tools/
 export PATH=$PATH:$HOME/Dropbox/Development/platform-tools/
 #SVN 设置
 export PATH=/usr/bin:$PATH
   [[ -s $(brew --prefix)/etc/profile.d/autojump.sh ]] && . $(brew --prefix)/etc/profile.d/autojump.sh
 export PATH="/usr/local/bin:$PATH"
-alias yuegate='sh /Users/luolei/Dropbox/CODE/Yuegate/yuegate'
+alias yuegate='sh /Users/$USER/Dev/Yuegate/yuegate'
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 #alias yworkflow='sh /Users/luolei/DEV/Yworkflow/bin/yworkflow'
 export ANDROID_HOME=~/Library/Android/sdk
+ [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
+ export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+export PATH="/usr/local/opt/python/libexec/bin:$PATH"
